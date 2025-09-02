@@ -1,0 +1,16 @@
+{
+  "name": "Item-management",
+  "version": "1.0.0",
+  "description": "微信小程序项目",
+  "main": "app.js",
+  "dependencies": {
+    "lin-ui": "^0.9.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["miniprogram", "wechat", "lin-ui"],
+  "author": "",
+  "license": "ISC"
+} 

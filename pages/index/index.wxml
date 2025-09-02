@@ -1,0 +1,34 @@
+<!--index.wxml-->
+<!-- <navigation-bar title="Weixin" back="{{false}}" color="black" background="#FFF"></navigation-bar> -->
+<scroll-view class="scrollarea" scroll-y type="list">
+  <l-form name="student" l-form-btn-class="l-form-btn-class" bind:linsubmit="submit">
+    <l-form-item label="姓名:" name="studentName">
+      <l-input id="studentName" placeholder="请输入物品购买花费" value="{{student.name}}" hide-label show-row="{{false}}" />
+    </l-form-item>
+
+    <l-form-item label="年龄:" name="studentAge">
+      <l-input id="studentAge" value="{{student.age}}" hide-label show-row="{{false}}" />
+    </l-form-item>
+
+    <l-form-item label="地址:" name="studentAddress">
+      <!-- <l-input id="studentAddress" value="{{student.address}}" hide-label show-row="{{false}}" /> -->
+      <l-input id="studentName" placeholder="请输入物品购买花费sasdsad" value="{{student.name}}" hide-label
+        show-row="{{false}}" />
+    </l-form-item>
+
+    <view class="date-picker">
+      <view class="date-picker-header">当前选择：{{ selected_date || '未选择' }}</view>
+      <picker mode="date" start="{{checkMinDate}}" value="{{endDateIndex}}" bindchange="onDatePickerChange">
+        <view class="picker-item">离开日期: {{endDateIndex}}</view>
+      </picker>
+    </view>
+
+
+    <view slot="submit">
+      <l-button>提交</l-button>
+    </view>
+    <view slot="reset">
+      <l-button type="default" plain>重置</l-button>
+    </view>
+  </l-form>
+</scroll-view>

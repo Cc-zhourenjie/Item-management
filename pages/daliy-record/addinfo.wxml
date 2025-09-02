@@ -1,0 +1,147 @@
+<!--pages/daliy-record/addinfo.wxml-->
+
+<scroll-view class="scrollarea" scroll-y type="list">
+
+  <!-- -------------------------------------------------- -->
+  <view class="container">
+    <!-- <l-card type="cover" plaintext="true">
+      <l-form name="student" l-form-btn-class="l-form-btn-class" bind:linsubmit="submit">
+        <l-form-item label="姓名:" name="studentName">
+          <l-input id="studentName" placeholder="请输入物品购买花费" value="{{student.name}}" hide-label show-row="{{false}}" />
+        </l-form-item>
+        <l-form-item label="年龄:" name="studentAge">
+          <l-input id="studentAge" value="{{student.age}}" hide-label show-row="{{false}}" />
+        </l-form-item>
+        <l-form-item label="地址:" name="studentAddress">
+          <l-input id="studentName" placeholder="请输入物品购买花费sasdsad" value="{{student.name}}" hide-label show-row="{{false}}" />
+        </l-form-item>
+      </l-form>
+    </l-card> -->
+    <!-- 产品基本信息 -->
+    <l-card type="cover" plaintext="true">
+      <l-form name="basicForm" is-submit-validate="{{false}}">
+        <l-form-item label="物品名称：" labelPlacement="row" alignItems="center" name="item_name">
+          <textarea class="form-control textarea" placeholder="物品名称" auto-height value="{{item_name}}"
+            bindinput="onItemNameInput">
+          </textarea>
+        </l-form-item>
+
+        <l-form-item label="条码：" labelPlacement="row" alignItems="center" name="item_barcode">
+          <l-input value="{{item_barcode}}" hide-label bindinput="onItemBarcodeInput" />
+        </l-form-item>
+        <l-form-item label="入库批次：" labelPlacement="row" alignItems="center" name="item_code">
+          <l-input disabled value="{{item_code}}" hide-label />
+        </l-form-item>
+        <l-form-item label="开封日：" labelPlacement="row" alignItems="center" name="open_day">
+          <view class="plain-text">{{ open_day || '-' }}</view>
+        </l-form-item>
+        <l-form-item label="状态：" labelPlacement="row" alignItems="center" name="item_state">
+          <view class="plain-text">{{ item_state || '-' }}</view>
+        </l-form-item>
+      </l-form>
+    </l-card>
+
+    <!-- 产品数量及价格 -->
+    <l-card type="cover" plaintext="true">
+      <l-form name="priceForm" is-submit-validate="{{false}}">
+        <l-form-item label="产品数量：" labelPlacement="row" alignItems="center" name="item_number">
+          <view class="row-inline">
+            <l-input class="form-control" l-input-class="input-full" type="number" value="{{item_number}}"
+              bind:lininput="onItemNumberInput" />
+            <l-button size="mini" class="ml8" bind:lintap="onChooseUnit">{{ item_number_unit || '单位选择' }}</l-button>
+          </view>
+        </l-form-item>
+        <l-form-item label="价格：" labelPlacement="row" alignItems="center" name="item_price">
+          <view class="row-inline">
+            <l-input class="form-control" l-input-class="input-full" hide-label type="digit" placeholder="请输入物品购买花费"
+              value="{{item_price}}" bind:lininput="onItemPriceInput" />
+            <view class="suffix">元</view>
+          </view>
+        </l-form-item>
+        <l-form-item label="物品类别：" labelPlacement="row" alignItems="center" name="item_category">
+          <l-button size="mini" class="ml8" bind:lintap="onChooseCategory">
+            {{ item_category || '未选择分类' }}
+          </l-button>
+        </l-form-item>
+      </l-form>
+    </l-card>
+
+    <!-- 产品有效期 -->
+    <l-card type="cover" plaintext="true">
+      <view class="sub-title">提供两种模式输入物品有效使用期</view>
+      <l-button size="mini" bind:lintap="onChooseExpirationType">切换到有效期模式</l-button>
+      <l-form name="expireForm" is-submit-validate="{{false}}">
+        <l-form-item label="生产日期：" wx:if="{{item_shelf_life_mode === 'shelf_life'}}" labelPlacement="row"
+          alignItems="center" name="production_date">
+          <view>
+            <picker mode="date" start="{{dateStart}}" end="{{dateEnd}}" bindchange="onProductionDate">
+              <!-- <view class="picker-trigger"> -->
+              {{ production_date || '请点击选择生产日期' }}
+              <!-- </view> -->
+            </picker>
+          </view>
+        </l-form-item>
+        <l-form-item label="保质期：" wx:if="{{item_shelf_life_mode === 'shelf_life'}}" labelPlacement="row"
+          alignItems="center" name="shelf_life">
+          <view class="row-inline">
+            <l-input class="form-control" l-input-class="input-full" l-row-class="hide-row" type="number"
+              placeholder="输入保质时长" value="{{shelf_life}}" bind:lininput="onShelfLifeInput" hide-label />
+            <l-button size="mini" class="ml8" bind:lintap="onChooseShelfLifeUnit">
+              {{ shelf_life_unit_bak || '年' }}
+            </l-button>
+          </view>
+        </l-form-item>
+        <l-form-item label="有效期至：" labelPlacement="row" alignItems="center" name="valid_date">
+          <!-- 根据输入的生产日期和保质期自动计算结果 -->
+          <l-input class="form-control" wx:if="{{item_shelf_life_mode === 'shelf_life'}}" disabled
+            value="{{valid_date || '根据生产日期和保质期自动计算'}}" hide-label />
+          <!-- 直接输入过期日 -->
+          <view wx:if="{{item_shelf_life_mode === 'validity_period'}}">
+            <picker mode="date" start="{{dateStart}}" end="{{dateEnd}}" bindchange="onValidityDate">
+              {{valid_date || '选择过期日'}}
+            </picker>
+          </view>
+
+        </l-form-item>
+      </l-form>
+    </l-card>
+
+    <!-- 产品存放位置 -->
+    <l-card type="cover" plaintext="true">
+      <l-form name="storageForm" is-submit-validate="{{false}}">
+        <l-form-item label="存放位置：" labelPlacement="row" alignItems="center" name="storage_location">
+          <l-button size="mini" bind:lintap="onChooseStorageLocation">选择存放位置</l-button>
+        </l-form-item>
+        <l-form-item label="存放方式：" labelPlacement="row" alignItems="center" name="storage_method">
+          <view class="row-inline">
+            <l-button size="mini" class="ml8" bind:lintap="onChooseStorageMethod">
+              {{ storage_method || '选择方式' }}
+            </l-button>
+          </view>
+        </l-form-item>
+        <l-form-item label="备注：" labelPlacement="row" alignItems="center" name="remark">
+          <textarea class="form-control textarea" placeholder="请输入备注" auto-height value="{{remark}}"
+            bindinput="onRemarkInput" />
+        </l-form-item>
+      </l-form>
+    </l-card>
+
+    <!-- 底部固定按钮栏 -->
+    <view class="bottom-buttons">
+      <l-button class="bar-btn" plain long bind:lintap="onSave">保存</l-button>
+      <l-button class="bar-btn" plain long bind:lintap="onCopy">复制</l-button>
+      <!-- 更多按钮 -->
+    </view>
+
+    <l-action-sheet></l-action-sheet>
+
+    <!-- 内置日期选择器（picker），暂放页面底部 -->
+    <!-- <view class="native-date-picker">
+      <view class="date-picker-header">当前目标：{{ pickerTarget || '未选择目标' }}，当前选择：{{ selected_date || '未选择' }}</view> -->
+    <!-- <picker mode="date" value="{{selected_date}}" start="{{dateStart}}" end="{{dateEnd}}"
+      bindchange="onNativeDateChange">
+      <view class="picker-trigger">点击选择日期</view>
+    </picker> -->
+    <!-- </view> -->
+  </view>
+</scroll-view>

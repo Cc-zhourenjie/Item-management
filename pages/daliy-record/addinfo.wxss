@@ -1,0 +1,198 @@
+/**index.wxss**/
+page {
+  height: 150vh;
+  display: flex;
+  flex-direction: column;
+
+  /* min-height: 100vh; */
+  /* 为底部栏留出空间 */
+  /* padding-bottom: 50px; */
+  /* box-sizing: border-box; */
+}
+
+/* 会根据页面剩余高度动态抖动控件，尽可能不要 */
+/* .scrollarea {
+  flex: 1;
+  overflow-y: hidden;
+} */
+
+.container {
+  padding: 24rpx 12rpx;
+  box-sizing: border-box;
+}
+
+.name-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.photo-placeholder {
+  width: 140rpx;
+  height: 140rpx;
+  border: 2rpx dashed #c8c8c8;
+  border-radius: 12rpx;
+  background: #f5f5f5;
+}
+
+.name-input {
+  flex: 1;
+}
+
+.row-inline {
+  display: flex;
+  align-items: flex-start;
+}
+
+.ml8 {
+  margin-left: 16rpx;
+}
+
+.suffix {
+  margin-left: 16rpx;
+  color: #666;
+}
+
+/* Hide LinUI input internal underline to keep consistent width */
+.hide-row {
+  display: none !important;
+}
+
+.date-display {
+  padding: 20rpx;
+  border: 1px solid #e5e5e5;
+  border-radius: 8rpx;
+  color: #666;
+}
+
+.sub-title {
+  color: #888;
+  margin-bottom: 16rpx;
+}
+
+/* 全部卡片宽度自适应且统一 */
+l-card {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 24rpx;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+l-card:last-child {
+  margin-bottom: 0;
+}
+
+/* 表单与项全宽承载，确保左右对齐 */
+/* l-form,
+l-form-item {
+  display: block;
+  width: 100%;
+} */
+
+/* 行内容器与控件占满可用宽度 */
+.row-inline {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 8rpx;
+}
+
+/* 通用控件：输入、日期等紧贴并自适应 */
+.form-control {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 日期显示块占满内容区 */
+.date-display {
+  width: 100%;
+}
+
+/* 让 l-form-item 下的直接子元素占满一行 */
+l-form-item>view {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 在行内容器中，通用控件按比例伸缩并防止溢出 */
+.row-inline .form-control {
+  flex: 1;
+  width: auto;
+  min-width: 0;
+}
+
+.textarea {
+  min-height: 80rpx;
+  padding: 20rpx;
+  border: 1px solid #e5e5e5;
+  border-radius: 8rpx;
+  line-height: 1.6;
+  color: #111;
+}
+
+/* 防止输入控件超出 l-card 宽度 */
+l-card .form-control,
+l-card l-input,
+l-card input,
+l-card textarea {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* 在行内布局下，l-input 弹性占位，避免与后缀拥挤导致溢出 */
+.row-inline l-input {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 底部按钮栏固定样式 */
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  background: #fff;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-top: 2px solid #ddd;
+  z-index: 999;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* 底部按钮容器样式 */
+.bottom-buttons {
+  display: flex;
+  gap: 70rpx;
+  padding: 24rpx;
+  box-sizing: border-box;
+}
+
+/* 底部按钮样式 */
+.bar-btn {
+  flex: 1;
+}
+
+/* 原生日期选择器样式 */
+.native-date-picker {
+  margin-top: 24rpx;
+  padding: 24rpx;
+  background: #fff;
+  border-top: 1px solid #eee;
+}
+.date-picker-header {
+  color: #666;
+  margin-bottom: 16rpx;
+}
+.picker-trigger {
+  padding: 20rpx;
+  border: 1px solid #e5e5e5;
+  border-radius: 8rpx;
+  text-align: center;
+  color: #333;
+}
