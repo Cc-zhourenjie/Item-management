@@ -7,31 +7,56 @@
 let flag = false;
 /**
  * 未登录
+ * @param {string} returnUrl 登录成功后要返回的页面路径
  */
-function notLogin() {
+function notLogin(returnUrl = '') {
   if (flag) return;
+  flag = true;
+  
+  // 获取当前页面路径作为默认返回地址
+  if (!returnUrl) {
+    const pages = getCurrentPages();
+    if (pages.length > 0) {
+      const currentPage = pages[pages.length - 1];
+      returnUrl = `/${currentPage.route}`;
+    }
+  }
+  
   wx.showModal({
     title: '提示',
     content: '您还未登录是否前往登录？',
     success(res) {
       console.log("登录");
       if (res.confirm) {
-        flag = false
-        // reject("用户未登录");
+        // 重置标志位
+        flag = false;
+        // 跳转到登录页面，并传递返回地址
+        const loginUrl = returnUrl ? `/pages/login/login?returnUrl=${encodeURIComponent(returnUrl)}` : '/pages/login/login';
         wx.navigateTo({
-          url: '/pages/login/login',
-        })
+          url: loginUrl,
+          success: () => {
+            console.log('跳转登录页面成功');
+          },
+          fail: (err) => {
+            console.error('跳转登录页面失败:', err);
+            // 跳转失败时重置标志位，允许重试
+            flag = false;
+            wx.showToast({
+              title: '跳转失败，请重试',
+              icon: 'none'
+            });
+          }
+        });
       } else if (res.cancel) {
-        flag = false
-        console.log('用户点击取消')
+        flag = false;
+        console.log('用户点击取消');
       }
     },
     fail: () => {
-      console.log("不登录");
-      flag = false
+      console.log("Modal显示失败");
+      flag = false;
     }
-  })
-  flag = true
+  });
 }
 
 /**
@@ -87,11 +112,13 @@ function ccRequest(url, data = {}, header = {}, requestType = "POST", config = {
   if (config['loadingTitle']) {
     loadingTitle = config['loadingTitle'];
   }
-  //判断是否已经登录
   return new Promise((resolve, reject) => {
+    //判断本次请求是否需要校验登录状态
     if (!config || !config["no_check_login"] || config["no_check_login"] == false) {
+      //判断是否已经登录
       if (!token) {
         notLogin();
+        reject(new Error('用户未登录'));
         return;
       }
     }
@@ -103,9 +130,12 @@ function ccRequest(url, data = {}, header = {}, requestType = "POST", config = {
         mask: true
       });
     }
-    //执行请求后端
+    if (config && !config["is_append_prefix"] && config["is_append_prefix"] != false) {
+      url = requestProfix + url;
+    }
+    //执行本次请求后端
     wx.request({
-      url: requestProfix + url,
+      url: url,
       data: data,
       header: _header,
       method: requestType,
@@ -126,6 +156,7 @@ function ccRequest(url, data = {}, header = {}, requestType = "POST", config = {
         //未登录状态
         if (res.data.code == 433) {
           notLogin();
+          reject(new Error('服务器返回未登录状态'));
           return;
         }
         if (res.data && res.data.Success == false) {
@@ -186,13 +217,26 @@ function ccPost(url, data = {}, header = {}, config = {}) {
   return ccRequest(url, data, header, "POST", config);
 }
 
+
+//后端请求地址
+function requestHost(appCode) {
+  var backUrl = {
+    "common": "http://127.0.0.1:10020",
+  }
+  var url = backUrl[appCode] ? backUrl[appCode] : backUrl["common"]
+  return url;
+}
+
+
 //请求前缀
-const requestProfix = "http://127.0.0.1:10020"
+const requestProfix = requestHost("common");
+
 
 // 暴露接口
 module.exports = {
   notLogin,
   // requestProfix,
+  requestHost,
   ccGet,
   ccPost
 };

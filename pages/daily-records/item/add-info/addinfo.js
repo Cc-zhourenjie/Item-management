@@ -241,7 +241,7 @@ Page({
   },
 
 
-  // 底部按钮
+  // 底部按钮事件
   onUse() {
     wx.showToast({ title: '使用', icon: 'none' })
   },
@@ -250,8 +250,85 @@ Page({
     wx.setClipboardData({ data })
   },
   onSave(e) {
-    debugger
-    wx.showToast({ title: '已保存', icon: 'success' })
+    // wx.showToast({ title: '已保存', icon: 'success' })
     console.log('save payload', this.data)
+
+    let isCheck = this.checkSaveData();
+    if (!isCheck) {
+      return false;
+    }
+    //格式化数据
+    this.data.item_state = this.data.item_state == "-" ? 0 : this.data.item_state;
+    this.data.item_price = getApp().globalObj.utils.isEmptyString(this.data.item_price) ? 0 : this.data.item_price;
+
+    //封装加密数据
+    var encryptedObj = getApp().globalObj.sysCommon.buildEncryptionObj(this.data);
+    var url = getApp().globalObj.requestUtils.requestHost("dr");
+    url += "/api/dr/item/info/saveiteminfo";
+    //保存数据
+    getApp().globalObj.requestUtils.ccPost(url, encryptedObj, null, { is_append_prefix: false }).then(result => {
+    });
+
+  },
+  //校验需要保存的数据
+  checkSaveData() {
+    //校验【名称】数据正确性
+    if (getApp().globalObj.utils.isEmptyString(this.data.item_name)) {
+      wx.lin.showMessage({
+        duration: 2000,
+        type: 'error',
+        content: '物品名称不可为空'
+      });
+      return false;
+    }
+    //校验【数量】数据正确性
+    if (!this.data.item_number || this.data.item_number <= 0) {
+      wx.lin.showMessage({
+        duration: 2000,
+        type: 'error',
+        content: '物品数量需大于0'
+      });
+      return false;
+    }
+    //判断【有效期类型】处理不同逻辑
+    if (this.data.item_shelf_life_mode == "shelf_life") {
+      if (!this.data.production_date) {
+        wx.lin.showMessage({
+          duration: 2000,
+          type: 'error',
+          content: '需填写生产日期'
+        });
+        return false;
+      }
+      if (!this.data.shelf_life || this.data.shelf_life <= 0) {
+        wx.lin.showMessage({
+          duration: 2000,
+          type: 'error',
+          content: '保质期需大于0'
+        });
+        return false;
+      }
+    }
+    else if (this.data.item_shelf_life_mode = "validity_period") {
+      if (!this.data.valid_date) {
+        wx.lin.showMessage({
+          duration: 2000,
+          type: 'error',
+          content: '需填写有效期'
+        });
+        return false;
+      }
+    }
+
+    //校验【存放方式】数据正确性
+    if (getApp().globalObj.utils.isEmptyString(this.data.storage_method)) {
+      wx.lin.showMessage({
+        duration: 2000,
+        type: 'error',
+        content: '未填写存放方式'
+      });
+      return false;
+    }
+    return true;
   }
 })

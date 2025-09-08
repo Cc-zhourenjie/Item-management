@@ -1,10 +1,10 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/daliy-record/addinfo",
+    "pages/daily-records/item/add-info/addinfo",
     "pages/login/login"
   ],
-  "entryPagePath": "pages/daliy-record/addinfo",
+  "entryPagePath": "pages/daily-records/item/add-info/addinfo",
   "window": {
     "navigationStyle": "custom",
     "navigationBarBackgroundColor": "#ffffff",
@@ -14,12 +14,8 @@
   "tabBar": {
     "list": [
       {
-        "pagePath": "pages/daliy-record/addinfo",
+        "pagePath": "pages/daily-records/item/add-info/addinfo",
         "text": "添加"
-      },
-      {
-        "pagePath": "pages/login/login",
-        "text": "登录"
       },
       {
         "pagePath": "pages/index/index",
@@ -28,14 +24,15 @@
     ]
   },
   "usingComponents": {
-    "l-button": "/lin-ui/button/index",
-    "l-form": "/lin-ui/form/index",
-    "l-form-item": "/lin-ui/form-item/index",
-    "l-input": "/lin-ui/input/index",
-    "l-calendar": "/lin-ui/calendar/index",
-    "l-action-sheet": "/lin-ui/action-sheet/index",
-    "l-card": "/lin-ui/card/index",
-    "l-textarea": "/lin-ui/textarea/index"
+    "l-button": "/components/lin-ui/button/index",
+    "l-form": "/components/lin-ui/form/index",
+    "l-form-item": "/components/lin-ui/form-item/index",
+    "l-input": "/components/lin-ui/input/index",
+    "l-calendar": "/components/lin-ui/calendar/index",
+    "l-action-sheet": "/components/lin-ui/action-sheet/index",
+    "l-card": "/components/lin-ui/card/index",
+    "l-textarea": "/components/lin-ui/textarea/index",
+    "l-message": "/components/lin-ui/message/index"
   },
   "style": "v2",
   "rendererOptions": {

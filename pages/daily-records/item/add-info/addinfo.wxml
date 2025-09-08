@@ -1,4 +1,4 @@
-<!--pages/daliy-record/addinfo.wxml-->
+<!--pages/daily-record/addinfo.wxml-->
 
 <scroll-view class="scrollarea" scroll-y type="list">
 
@@ -17,12 +17,13 @@
         </l-form-item>
       </l-form>
     </l-card> -->
+    <!-- 消息提醒标签 -->
+    <l-message />
     <!-- 产品基本信息 -->
     <l-card type="cover" plaintext="true">
       <l-form name="basicForm" is-submit-validate="{{false}}">
         <l-form-item label="物品名称：" labelPlacement="row" alignItems="center" name="item_name">
-          <textarea class="form-control textarea" placeholder="物品名称" auto-height value="{{item_name}}"
-            bindinput="onItemNameInput">
+          <textarea class="form-control textarea" placeholder="物品名称" auto-height value="{{item_name}}" bindinput="onItemNameInput">
           </textarea>
         </l-form-item>
 
@@ -46,15 +47,13 @@
       <l-form name="priceForm" is-submit-validate="{{false}}">
         <l-form-item label="产品数量：" labelPlacement="row" alignItems="center" name="item_number">
           <view class="row-inline">
-            <l-input class="form-control" l-input-class="input-full" type="number" value="{{item_number}}"
-              bind:lininput="onItemNumberInput" />
+            <l-input class="form-control" l-input-class="input-full" type="number" value="{{item_number}}" bind:lininput="onItemNumberInput" />
             <l-button size="mini" class="ml8" bind:lintap="onChooseUnit">{{ item_number_unit || '单位选择' }}</l-button>
           </view>
         </l-form-item>
         <l-form-item label="价格：" labelPlacement="row" alignItems="center" name="item_price">
           <view class="row-inline">
-            <l-input class="form-control" l-input-class="input-full" hide-label type="digit" placeholder="请输入物品购买花费"
-              value="{{item_price}}" bind:lininput="onItemPriceInput" />
+            <l-input class="form-control" l-input-class="input-full" hide-label type="digit" placeholder="请输入物品购买花费" value="{{item_price}}" bind:lininput="onItemPriceInput" />
             <view class="suffix">元</view>
           </view>
         </l-form-item>
@@ -71,8 +70,7 @@
       <view class="sub-title">提供两种模式输入物品有效使用期</view>
       <l-button size="mini" bind:lintap="onChooseExpirationType">切换到有效期模式</l-button>
       <l-form name="expireForm" is-submit-validate="{{false}}">
-        <l-form-item label="生产日期：" wx:if="{{item_shelf_life_mode === 'shelf_life'}}" labelPlacement="row"
-          alignItems="center" name="production_date">
+        <l-form-item label="生产日期：" wx:if="{{item_shelf_life_mode === 'shelf_life'}}" labelPlacement="row" alignItems="center" name="production_date">
           <view>
             <picker mode="date" start="{{dateStart}}" end="{{dateEnd}}" bindchange="onProductionDate">
               <!-- <view class="picker-trigger"> -->
@@ -81,11 +79,9 @@
             </picker>
           </view>
         </l-form-item>
-        <l-form-item label="保质期：" wx:if="{{item_shelf_life_mode === 'shelf_life'}}" labelPlacement="row"
-          alignItems="center" name="shelf_life">
+        <l-form-item label="保质期：" wx:if="{{item_shelf_life_mode === 'shelf_life'}}" labelPlacement="row" alignItems="center" name="shelf_life">
           <view class="row-inline">
-            <l-input class="form-control" l-input-class="input-full" l-row-class="hide-row" type="number"
-              placeholder="输入保质时长" value="{{shelf_life}}" bind:lininput="onShelfLifeInput" hide-label />
+            <l-input class="form-control" l-input-class="input-full" l-row-class="hide-row" type="number" placeholder="输入保质时长" value="{{shelf_life}}" bind:lininput="onShelfLifeInput" hide-label />
             <l-button size="mini" class="ml8" bind:lintap="onChooseShelfLifeUnit">
               {{ shelf_life_unit_bak || '年' }}
             </l-button>
@@ -93,8 +89,7 @@
         </l-form-item>
         <l-form-item label="有效期至：" labelPlacement="row" alignItems="center" name="valid_date">
           <!-- 根据输入的生产日期和保质期自动计算结果 -->
-          <l-input class="form-control" wx:if="{{item_shelf_life_mode === 'shelf_life'}}" disabled
-            value="{{valid_date || '根据生产日期和保质期自动计算'}}" hide-label />
+          <l-input class="form-control" wx:if="{{item_shelf_life_mode === 'shelf_life'}}" disabled value="{{valid_date || '根据生产日期和保质期自动计算'}}" hide-label />
           <!-- 直接输入过期日 -->
           <view wx:if="{{item_shelf_life_mode === 'validity_period'}}">
             <picker mode="date" start="{{dateStart}}" end="{{dateEnd}}" bindchange="onValidityDate">
@@ -120,8 +115,7 @@
           </view>
         </l-form-item>
         <l-form-item label="备注：" labelPlacement="row" alignItems="center" name="remark">
-          <textarea class="form-control textarea" placeholder="请输入备注" auto-height value="{{remark}}"
-            bindinput="onRemarkInput" />
+          <textarea class="form-control textarea" placeholder="请输入备注" auto-height value="{{remark}}" bindinput="onRemarkInput" />
         </l-form-item>
       </l-form>
     </l-card>

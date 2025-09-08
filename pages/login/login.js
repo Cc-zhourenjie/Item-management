@@ -11,19 +11,86 @@ Page({
    * 页面的初始数据
    */
   data: {
-
+    returnUrl: '' // 登录成功后要返回的页面路径
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+    // 获取返回地址参数
+    if (options.returnUrl) {
+      this.setData({
+        returnUrl: decodeURIComponent(options.returnUrl)
+      });
+      console.log('登录成功后将返回:', this.data.returnUrl);
+    }
   },
   close() {
     wx.switchTab({
       url: '/pages/index/index'
     })
+  },
+
+  /**
+   * 登录成功后的跳转逻辑
+   */
+  navigateAfterLogin() {
+    const returnUrl = this.data.returnUrl;
+    
+    if (returnUrl) {
+      // 如果有返回地址，跳转到指定页面
+      console.log('跳转到返回页面:', returnUrl);
+      
+      // 判断是否是 tabBar 页面
+      const tabBarPages = ['/pages/index/index', '/pages/daily-records/item/add-info/addinfo'];
+      if (tabBarPages.includes(returnUrl)) {
+        wx.switchTab({
+          url: returnUrl,
+          success: () => {
+            console.log('成功跳转到 tabBar 页面:', returnUrl);
+          },
+          fail: (err) => {
+            console.error('跳转到 tabBar 页面失败:', err);
+            this.fallbackNavigation();
+          }
+        });
+      } else {
+        wx.navigateTo({
+          url: returnUrl,
+          success: () => {
+            console.log('成功跳转到普通页面:', returnUrl);
+          },
+          fail: (err) => {
+            console.error('跳转到普通页面失败:', err);
+            this.fallbackNavigation();
+          }
+        });
+      }
+    } else {
+      // 没有返回地址，使用默认跳转
+      this.fallbackNavigation();
+    }
+  },
+
+  /**
+   * 默认跳转逻辑（当没有返回地址或跳转失败时）
+   */
+  fallbackNavigation() {
+    console.log('使用默认跳转逻辑');
+    wx.switchTab({
+      url: '/pages/index/index',
+      success: () => {
+        console.log('成功跳转到默认页面');
+      },
+      fail: (err) => {
+        console.error('跳转到默认页面也失败了:', err);
+        wx.showToast({
+          title: '跳转失败',
+          icon: 'none'
+        });
+      }
+    });
   },
   getUserProfile() {
     wx.getUserProfile({
@@ -61,9 +128,10 @@ Page({
                       data: rest.data.token
                     })
 
-                    wx.switchTab({
-                      url: '/pages/index/index',
-                    })
+                    // 登录成功后跳转
+                    setTimeout(() => {
+                      this.navigateAfterLogin();
+                    }, 100);
                   } else {
                     wx.showToast({
                       title: '服务器 ' + res.data.status + ' 错误',
@@ -82,7 +150,6 @@ Page({
   },
   bindgetuserinfo(res) {
     console.log("res", res)
-    debugger
     if (res.detail.errMsg == 'getUserInfo:ok') {
       let userInfo = {
         ...res.detail.userInfo
@@ -91,14 +158,16 @@ Page({
         success: e => {
           console.log("res", res)
           let code = e.code; //调用wx.login，获取登录凭证（code），并调用接口，将code发送到第三方客户端 
-          var promise = getApp().globalData.requestUtils.ccPost("/api/wxapp/user/login", {
+          //封装加密数据
+          var encryptedObj = getApp().globalObj.sysCommon.buildEncryptionObj(res.detail.rawData);
+          var promise = getApp().globalObj.requestUtils.ccPost("/api/wxapp/user/login", {
             code: e.code,
-            raw_data: res.detail.rawData,
+            // raw_data: res.detail.rawData,
+            encrypted_data_row: encryptedObj,
             signature: res.detail.signature,
             iv: res.detail.iv,
             encrypted_data: res.detail.encryptedData
           }, undefined, { no_check_login: true });
-          console.log(promise)
           promise.then(result => {
             let rest = result.data;
             if (result.error_code.code == "200") {
@@ -115,10 +184,20 @@ Page({
               // wx.switchTab({
               //   url: '/pages/index/index',
               // });
-              this.$Message({
-                content: '登录成功',
-                type: "success"
-              })
+              // this.$Message({
+              //   content: '登录成功',
+              //   type: "success"
+              // })
+              wx.showToast({
+                title: '登录成功',
+                icon: 'success', // 显示对勾图标
+                duration: 1500
+              });
+              
+              // 登录成功后跳转
+              setTimeout(() => {
+                this.navigateAfterLogin();
+              }, 1500);
             } else {
               wx.showToast({
                 title: '服务器错误',
@@ -137,9 +216,9 @@ Page({
       //   type: 'error'
       // });
       // this.handleHide();
-      const dialog =  this.selectComponent("#login_dialog");
+      const dialog = this.selectComponent("#login_dialog");
       dialog.linShow({
-        title:"登录失败"
+        title: "登录失败"
       });
     }
   },
