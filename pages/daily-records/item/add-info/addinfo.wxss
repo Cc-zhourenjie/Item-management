@@ -100,6 +100,42 @@ l-form-item {
   gap: 8rpx;
 }
 
+/* 生产日期与时间选择行样式优化 */
+.production-row {
+  align-items: center;
+}
+
+.date-picker {
+  flex: 1;
+  min-width: 0;
+}
+
+.picker-divider {
+  width: 1px;
+  height: 40rpx;
+  background-color: #e5e5e5;
+}
+
+.time-picker {
+  margin-left: auto;
+  max-width: 240rpx;
+  text-align: right;
+  color: #666;
+}
+
+.time-picker-wrap {
+  position: relative;
+  margin-left: auto;
+}
+
+.time-picker-mask {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
 /* 通用控件：输入、日期等紧贴并自适应 */
 .form-control {
   width: 100%;
