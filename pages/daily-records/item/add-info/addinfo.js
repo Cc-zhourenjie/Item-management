@@ -17,6 +17,7 @@ Page({
     // 生产与有效期
     item_shelf_life_mode: 'shelf_life',
     production_date: '',
+    production_time: '',
     shelf_life: '',
     shelf_life_unit: 'year',
     shelf_life_unit_bak: '年',
@@ -34,8 +35,20 @@ Page({
     calendarTarget: '',
     pickerTarget: '',
     dateStart: '1900-01-01',
-    dateEnd: '2100-12-31'
+    dateEnd: '2100-12-31',
+    hours: [],
+    minutes: [],
+    seconds: [],
+    timeMultiIndex: [0, 0, 0]
   },
+  //监听页面加载
+  onLoad() {
+    const hours = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0'))
+    const minutes = Array.from({ length: 60 }, (_, i) => i.toString().padStart(2, '0'))
+    const seconds = Array.from({ length: 60 }, (_, i) => i.toString().padStart(2, '0'))
+    this.setData({ hours, minutes, seconds })
+  },
+
 
   submit(event) {
     const { detail } = event;
@@ -108,10 +121,22 @@ Page({
     this.computeExpireDate();
   },
 
+  // 选择生产时间（时分秒）
+  onProductionTime(e) {
+    const indexes = e.detail.value || []
+    const h = this.data.hours[indexes[0]] || '00'
+    const m = this.data.minutes[indexes[1]] || '00'
+    const s = this.data.seconds[indexes[2]] || '00'
+    const production_time = `${h}:${m}:${s}`
+    this.setData({ timeMultiIndex: indexes, production_time }, () => {
+      this.computeExpireDate()
+    })
+  },
+
   // 点击输入保质期
   onValidityDate(e) {
     const { value } = e.detail;
-    this.setData({ valid_date: value });
+    this.setData({ valid_date: value + " 00:00:00" });
   },
 
 
@@ -196,32 +221,66 @@ Page({
     }
   },
 
-  // 计算有效期
+  // 计算有效期（考虑时分秒）
   computeExpireDate() {
-    const { production_date, shelf_life } = this.data
+    const { production_date, production_time, shelf_life, shelf_life_unit } = this.data
     if (!production_date || !shelf_life || shelf_life === '') {
       this.setData({ valid_date: '' })
       return
     }
-    // 确保 shelf_life 是有效数字
-    const years = Number(shelf_life)
-    if (isNaN(years) || years <= 0) {
+
+    const numericShelfLife = Number(shelf_life)
+    if (isNaN(numericShelfLife) || numericShelfLife <= 0) {
       this.setData({ valid_date: '' })
       return
     }
-    const parts = production_date.split('-').map(Number)
-    if (parts.length !== 3) return
-    const y = parts[0] + years
-    const m = parts[1]
-    const d = parts[2]
-    const result = this.formatDate(new Date(y, m - 1, d))
+
+    const timePart = production_time && production_time.length > 0 ? production_time : '00:00:00'
+    const baseDate = new Date(`${production_date} ${timePart}`.replace(/-/g, '/'))
+    if (isNaN(baseDate.getTime())) {
+      this.setData({ valid_date: '' })
+      return
+    }
+
+    const target = new Date(baseDate.getTime())
+    switch (shelf_life_unit) {
+      case 'year':
+        target.setFullYear(target.getFullYear() + numericShelfLife)
+        break
+      case 'month':
+        target.setMonth(target.getMonth() + numericShelfLife)
+        break
+      case 'day':
+        target.setDate(target.getDate() + numericShelfLife)
+        break
+      case 'hour':
+        target.setHours(target.getHours() + numericShelfLife)
+        break
+      default:
+        target.setDate(target.getDate() + numericShelfLife)
+        break
+    }
+
+    const result = this.formatDateTime(target)
     this.setData({ valid_date: result })
   },
+  //格式化日期
   formatDate(date) {
     const y = date.getFullYear()
     const m = (date.getMonth() + 1).toString().padStart(2, '0')
     const d = date.getDate().toString().padStart(2, '0')
     return `${y}-${m}-${d}`
+  },
+
+  //格式化日期时间
+  formatDateTime(date) {
+    const y = date.getFullYear()
+    const m = (date.getMonth() + 1).toString().padStart(2, '0')
+    const d = date.getDate().toString().padStart(2, '0')
+    const hh = date.getHours().toString().padStart(2, '0')
+    const mm = date.getMinutes().toString().padStart(2, '0')
+    const ss = date.getSeconds().toString().padStart(2, '0')
+    return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
   },
 
   //选择存放方式
@@ -287,6 +346,15 @@ Page({
         duration: 2000,
         type: 'error',
         content: '物品数量需大于0'
+      });
+      return false;
+    }
+    //校验【数量单位】数据正确性
+    if (getApp().globalObj.utils.isEmptyString(this.data.item_number_unit)) {
+      wx.lin.showMessage({
+        duration: 2000,
+        type: 'error',
+        content: '物品数量单位不可为空'
       });
       return false;
     }

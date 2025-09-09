@@ -71,11 +71,12 @@
       <l-button size="mini" bind:lintap="onChooseExpirationType">切换到有效期模式</l-button>
       <l-form name="expireForm" is-submit-validate="{{false}}">
         <l-form-item label="生产日期：" wx:if="{{item_shelf_life_mode === 'shelf_life'}}" labelPlacement="row" alignItems="center" name="production_date">
-          <view>
+          <view class="row-inline">
             <picker mode="date" start="{{dateStart}}" end="{{dateEnd}}" bindchange="onProductionDate">
-              <!-- <view class="picker-trigger"> -->
-              {{ production_date || '请点击选择生产日期' }}
-              <!-- </view> -->
+              {{ production_date || '选择日期' }}
+            </picker>
+            <picker mode="multiSelector" range="{{[hours, minutes, seconds]}}" value="{{timeMultiIndex}}" bindchange="onProductionTime">
+              {{ production_time || '选择时分秒' }}
             </picker>
           </view>
         </l-form-item>

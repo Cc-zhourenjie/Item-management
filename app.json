@@ -2,9 +2,10 @@
   "pages": [
     "pages/index/index",
     "pages/daily-records/item/add-info/addinfo",
+    "pages/daily-records/item/item-index/itemindex",
     "pages/login/login"
   ],
-  "entryPagePath": "pages/daily-records/item/add-info/addinfo",
+  "entryPagePath": "pages/daily-records/item/item-index/itemindex",
   "window": {
     "navigationStyle": "custom",
     "navigationBarBackgroundColor": "#ffffff",
@@ -12,29 +13,34 @@
     "navigationBarTitleText": "微信接口功能演示"
   },
   "tabBar": {
-    "list": [
-      {
-        "pagePath": "pages/daily-records/item/add-info/addinfo",
-        "text": "添加"
+    "list": [{
+        "pagePath": "pages/daily-records/item/item-index/itemindex",
+        "text": "首页"
       },
       {
         "pagePath": "pages/index/index",
-        "text": "首页"
+        "text": "添加"
       }
     ]
   },
   "usingComponents": {
-    "l-button": "/components/lin-ui/button/index",
-    "l-form": "/components/lin-ui/form/index",
-    "l-form-item": "/components/lin-ui/form-item/index",
-    "l-input": "/components/lin-ui/input/index",
-    "l-calendar": "/components/lin-ui/calendar/index",
-    "l-action-sheet": "/components/lin-ui/action-sheet/index",
-    "l-card": "/components/lin-ui/card/index",
-    "l-textarea": "/components/lin-ui/textarea/index",
-    "l-message": "/components/lin-ui/message/index"
+    "l-button": "lin-ui/button/index",
+    "l-form": "lin-ui/form/index",
+    "l-form-item": "lin-ui/form-item/index",
+    "l-input": "lin-ui/input/index",
+    "l-calendar": "lin-ui/calendar/index",
+    "l-action-sheet": "lin-ui/action-sheet/index",
+    "l-card": "lin-ui/card/index",
+    "l-textarea": "lin-ui/textarea/index",
+    "l-message": "lin-ui/message/index",
+    "l-grid": "lin-ui/grid/index",
+    "l-grid-item": "lin-ui/grid-item/index",
+    "l-icon": "lin-ui/icon/index",
+    "van-button": "@vant/weapp/button/index",
+    "van-grid": "@vant/weapp/grid/index",
+    "van-grid-item": "@vant/weapp/grid-item/index",
+    "van-icon": "@vant/weapp/icon/index"
   },
-  "style": "v2",
   "rendererOptions": {
     "skyline": {
       "defaultDisplayBlock": true,

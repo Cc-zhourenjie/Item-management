@@ -4,13 +4,17 @@
   "description": "微信小程序项目",
   "main": "app.js",
   "dependencies": {
+    "@vant/weapp": "^1.11.7",
     "lin-ui": "^0.9.0"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["miniprogram", "wechat", "lin-ui"],
+  "keywords": [
+    "miniprogram",
+    "wechat",
+    "lin-ui"
+  ],
   "author": "",
   "license": "ISC"
-} 
+}

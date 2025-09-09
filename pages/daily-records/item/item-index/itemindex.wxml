@@ -1,0 +1,53 @@
+<!--pages/daily-records/item/item-index/itemindex.wxml-->
+
+<scroll-view class="scrollarea" scroll-y type="list">
+
+    <view>
+        <l-card l-class="grid" type="cover" plaintext="true">
+            物品管理
+            <l-grid>
+                <l-grid-item key="add" slot="add" bind:linitemtap="openLink">
+                    <view class="grid-item__card color-1">
+                        <van-icon name="edit" size="50px" />
+                        <view class="text">物品录入</view>
+                    </view>
+                </l-grid-item>
+                <l-grid-item key="my_item" slot="my_item" bind:linitemtap="openLink">
+                    <view class="grid-item__card color-2">
+                        <van-icon name="send-gift-o" size="50px" />
+                        <view class="text">我的物品</view>
+                    </view>
+                </l-grid-item>
+                <l-grid-item key="use_record" slot="use_record" bind:linitemtap="openLink">
+                    <view class="grid-item__card color-3">
+                        <van-icon name="todo-list-o" size="50px" />
+                        <view class="text">使用记录</view>
+                    </view>
+                </l-grid-item>
+            </l-grid>
+        </l-card>
+        <l-card l-class="grid" type="cover" plaintext="true">
+            <l-grid>
+                <l-grid-item key="1" slot="1">
+                    <view class="grid-item__card color-4">
+                        <van-icon name="edit" size="50px" />
+                        <view class="text">物品录入</view>
+                    </view>
+                </l-grid-item>
+                <l-grid-item key="2" slot="2">
+                    <view class="grid-item__card color-5">
+                        <van-icon name="send-gift-o" size="50px" />
+                        <view class="text">我的物品</view>
+                    </view>
+                </l-grid-item>
+                <l-grid-item key="3" slot="3">
+                    <view class="grid-item__card color-6">
+                        <van-icon name="todo-list-o" size="50px" />
+                        <view class="text">使用记录</view>
+                    </view>
+                </l-grid-item>
+            </l-grid>
+        </l-card>
+
+    </view>
+</scroll-view>

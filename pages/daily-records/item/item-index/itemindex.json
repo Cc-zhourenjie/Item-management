@@ -1,0 +1,8 @@
+{
+  "usingComponents": {},
+  "backgroundTextStyle": "light",
+  "navigationBarBackgroundColor": "#6676fa",
+  "navigationBarTitleText": "物品管理",
+  "navigationBarTextStyle": "black",
+  "navigationStyle": "default"
+}
