@@ -41,21 +41,20 @@ Page({
     if (returnUrl) {
       // 如果有返回地址，跳转到指定页面
       console.log('跳转到返回页面:', returnUrl);
-      
       // 判断是否是 tabBar 页面
-      const tabBarPages = ['/pages/index/index', '/pages/daily-records/item/add-info/addinfo'];
-      if (tabBarPages.includes(returnUrl)) {
-        wx.switchTab({
-          url: returnUrl,
-          success: () => {
-            console.log('成功跳转到 tabBar 页面:', returnUrl);
-          },
-          fail: (err) => {
-            console.error('跳转到 tabBar 页面失败:', err);
-            this.fallbackNavigation();
-          }
-        });
-      } else {
+      // const tabBarPages = ['/pages/index/index', '/pages/daily-records/item/add-info/addinfo'];
+      // if (tabBarPages.includes(returnUrl)) {
+      //   wx.switchTab({
+      //     url: returnUrl,
+      //     success: () => {
+      //       console.log('成功跳转到 tabBar 页面:', returnUrl);
+      //     },
+      //     fail: (err) => {
+      //       console.error('跳转到 tabBar 页面失败:', err);
+      //       this.fallbackNavigation();
+      //     }
+      //   });
+      // } else {
         wx.navigateTo({
           url: returnUrl,
           success: () => {
@@ -66,7 +65,7 @@ Page({
             this.fallbackNavigation();
           }
         });
-      }
+      // }
     } else {
       // 没有返回地址，使用默认跳转
       this.fallbackNavigation();

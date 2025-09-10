@@ -2,6 +2,7 @@
   "pages": [
     "pages/index/index",
     "pages/daily-records/item/add-info/addinfo",
+    "pages/daily-records/item/item-list/itemlist",
     "pages/daily-records/item/item-index/itemindex",
     "pages/login/login"
   ],
@@ -11,17 +12,6 @@
     "navigationBarBackgroundColor": "#ffffff",
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "微信接口功能演示"
-  },
-  "tabBar": {
-    "list": [{
-        "pagePath": "pages/daily-records/item/item-index/itemindex",
-        "text": "首页"
-      },
-      {
-        "pagePath": "pages/index/index",
-        "text": "添加"
-      }
-    ]
   },
   "usingComponents": {
     "l-button": "lin-ui/button/index",
@@ -39,7 +29,8 @@
     "van-button": "@vant/weapp/button/index",
     "van-grid": "@vant/weapp/grid/index",
     "van-grid-item": "@vant/weapp/grid-item/index",
-    "van-icon": "@vant/weapp/icon/index"
+    "van-icon": "@vant/weapp/icon/index",
+    "van-card": "@vant/weapp/card/index"
   },
   "rendererOptions": {
     "skyline": {

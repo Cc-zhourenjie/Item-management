@@ -55,10 +55,22 @@ const formatDate = (date) => formatTime(date, 'YYYY-MM-DD');
 const formatDateTime = (date) => formatTime(date, 'YYYY-MM-DD HH:mm');
 const formatTimeOnly = (date) => formatTime(date, 'HH:mm:ss');
 
+/**
+ * 日期字符串转成时间戳
+ * @param {日期字符串} dateString 
+ * @returns 
+ */
+function dateStringToTimestamp(dateString) {
+  if (!dateString || typeof dateString !== 'string') return null;
+  const timestamp = Date.parse(dateString.replace(/-/g, '/'));
+  return isNaN(timestamp) ? null : timestamp;
+}
+
 // 暴露接口
 module.exports = {
   formatTime,
   formatDate,
   formatDateTime,
-  formatTimeOnly
+  formatTimeOnly,
+  dateStringToTimestamp
 };

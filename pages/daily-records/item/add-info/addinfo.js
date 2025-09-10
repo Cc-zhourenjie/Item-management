@@ -43,6 +43,12 @@ Page({
   },
   //监听页面加载
   onLoad() {
+    getApp().globalObj.requestUtils.checkLogin('', function () {
+      wx.navigateBack({
+        // delta: 1
+      })
+    });
+
     const hours = Array.from({ length: 24 }, (_, i) =>
       i.toString().padStart(2, "0")
     );
@@ -54,31 +60,6 @@ Page({
     );
     this.setData({ hours, minutes, seconds });
   },
-
-  submit(event) {
-    const { detail } = event;
-    /*
-      detail 返回三个参数
-      1、values: 各表单项的value值
-      2、errors: 各表单项验证后的返回的错误信息数组
-      3、isValidate: 表单是否验证通过的boolean值
-      具体格式示例：
-      detail = {
-         values: {
-             studentName: "",
-             studentAge: "",
-             studentAddress: ""
-         },
-         errors: {
-             studentName: [],
-             studentAge: [],
-             studentAddress: []
-         },
-         isValidate: true
-      }
-    */
-  },
-
   //监听页面初次渲染完成
   onReady() {
     if (wx && wx.lin && typeof wx.lin.initValidateForm === "function") {
@@ -164,7 +145,7 @@ Page({
   // 点击输入保质期
   onValidityDate(e) {
     const { value } = e.detail;
-    this.setData({ valid_date: value });
+    this.setData({ valid_date: value + " 00:00:00" });
   },
 
   //输入保质期后事件
@@ -323,29 +304,52 @@ Page({
     if (!isCheck) {
       return false;
     }
-    //格式化数据
-    this.data.item_state = this.data.item_state == "-" ? 0 : this.data.item_state;
-    this.data.item_price = getApp().globalObj.utils.isEmptyString(this.data.item_price) ? 0 : this.data.item_price;
 
-    if (!getApp().globalObj.utils.isEmptyString(this.data.production_date)) {
+    //获取页面数据
+    let jsonValue = getApp().globalObj.utils.deepMerge({}, this.data);
+
+    if (!getApp().globalObj.utils.isEmptyString(jsonValue.production_date)) {
       //没有设置生产日期的时分秒，默认为00:00:00
-      if (getApp().globalObj.utils.isEmptyString(this.data.production_time)) {
-        this.data.production_time = "00:00:00";
+      if (getApp().globalObj.utils.isEmptyString(jsonValue.production_time)) {
+        jsonValue.production_time = "00:00:00";
       }
       //先把之前的数据格式化成：年-月-日（防止每次都追加时分秒的错误数据，一般情况不存在）
-      this.data.production_date = getApp().globalObj.timeUtils.formatDate(this.data.production_date, "YYYY-MM-DD");
+      jsonValue.production_date = getApp().globalObj.timeUtils.formatDate(jsonValue.production_date,);
       //生产日期和时间的拼接
-      this.data.production_date = this.data.production_date + " " + this.data.production_time;
+      jsonValue.production_date = jsonValue.production_date + " " + jsonValue.production_time;
     }
 
+    //格式化数据
+    jsonValue.item_state = jsonValue.item_state == "-" ? 0 : jsonValue.item_state;
+    jsonValue.item_price = getApp().globalObj.utils.isEmptyString(jsonValue.item_price) ? 0 : jsonValue.item_price;
+    jsonValue.open_day = getApp().globalObj.timeUtils.dateStringToTimestamp(jsonValue.open_day);
+    jsonValue.production_date = getApp().globalObj.timeUtils.dateStringToTimestamp(jsonValue.production_date);
+    jsonValue.valid_date = getApp().globalObj.timeUtils.dateStringToTimestamp(jsonValue.valid_date);
+
     //封装加密数据
-    var encryptedObj = getApp().globalObj.sysCommon.buildEncryptionObj(this.data);
+    var encryptedObj = getApp().globalObj.sysCommon.buildEncryptionObj(jsonValue);
     var url = getApp().globalObj.requestUtils.requestHost("dr");
     url += "/api/dr/item/info/saveiteminfo";
     //保存数据
     getApp().globalObj.requestUtils.ccPost(url, encryptedObj, null, { is_append_prefix: false, }).then((result) => {
-
       //处理返回结果
+      if (result.data) {
+        wx.showToast({
+          title: '已录入',
+          icon: 'success', // 显示对勾图标
+          duration: 1500
+        });
+        setTimeout(function () {
+          wx.navigateBack({
+            // delta: 1
+          })
+        }, 500);
+      }
+      wx.showToast({
+        title: '录入失败',
+        icon: 'error', // 显示对勾图标
+        duration: 1500
+      });
 
     });
   },

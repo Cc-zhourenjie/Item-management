@@ -5,14 +5,29 @@
 
 //是否登录
 let flag = false;
+
+/**
+ * 检查登录状态
+ * @param {登录成功后的跳转地址} returnUrl 
+ * @param {取消登录回调} cancelCallBack 
+ * @param {登录失败回调} failCallBack 
+ */
+function checkLogin(returnUrl = '', cancelCallBack, failCallBack) {
+  var token = wx.getStorageSync("token");
+  if (!token) {
+    notLogin(returnUrl, cancelCallBack, failCallBack);
+  }
+}
+
+
 /**
  * 未登录
  * @param {string} returnUrl 登录成功后要返回的页面路径
  */
-function notLogin(returnUrl = '') {
+function notLogin(returnUrl = '', cancelCallBack, failCallBack) {
   if (flag) return;
   flag = true;
-  
+
   // 获取当前页面路径作为默认返回地址
   if (!returnUrl) {
     const pages = getCurrentPages();
@@ -21,12 +36,13 @@ function notLogin(returnUrl = '') {
       returnUrl = `/${currentPage.route}`;
     }
   }
-  
+
   wx.showModal({
     title: '提示',
     content: '您还未登录是否前往登录？',
     success(res) {
       console.log("登录");
+      //确定登录
       if (res.confirm) {
         // 重置标志位
         flag = false;
@@ -47,14 +63,18 @@ function notLogin(returnUrl = '') {
             });
           }
         });
-      } else if (res.cancel) {
+      }
+      //取消登录
+      else if (res.cancel) {
         flag = false;
         console.log('用户点击取消');
+        if (cancelCallBack) cancelCallBack();
       }
     },
     fail: () => {
       console.log("Modal显示失败");
       flag = false;
+      if (failCallBack) failCallBack();
     }
   });
 }
@@ -71,7 +91,9 @@ function getCommonHeader() {
   if (token) {
     header = Object.assign({}, header, {
       // 'Authorization': 'Bearer ' + token
-      'Authorization': token
+      'Authorization': token,
+      'accesstoken': token,
+      'request-type': 'WeChat'
     });
   }
   return header;
@@ -235,6 +257,7 @@ const requestProfix = requestHost("common");
 // 暴露接口
 module.exports = {
   notLogin,
+  checkLogin,
   // requestProfix,
   requestHost,
   ccGet,
