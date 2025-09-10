@@ -37,7 +37,7 @@ Page({
    */
   navigateAfterLogin() {
     const returnUrl = this.data.returnUrl;
-    
+
     if (returnUrl) {
       // 如果有返回地址，跳转到指定页面
       console.log('跳转到返回页面:', returnUrl);
@@ -55,16 +55,16 @@ Page({
       //     }
       //   });
       // } else {
-        wx.navigateTo({
-          url: returnUrl,
-          success: () => {
-            console.log('成功跳转到普通页面:', returnUrl);
-          },
-          fail: (err) => {
-            console.error('跳转到普通页面失败:', err);
-            this.fallbackNavigation();
-          }
-        });
+      wx.navigateTo({
+        url: returnUrl,
+        success: () => {
+          console.log('成功跳转到普通页面:', returnUrl);
+        },
+        fail: (err) => {
+          console.error('跳转到普通页面失败:', err);
+          this.fallbackNavigation();
+        }
+      });
       // }
     } else {
       // 没有返回地址，使用默认跳转
@@ -91,62 +91,6 @@ Page({
       }
     });
   },
-  getUserProfile() {
-    wx.getUserProfile({
-      desc: '用于完善会员资料', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
-      success: (resget) => {
-        console.log(resget)
-        wx.login({
-          success(reslogin) {
-            console.log(reslogin)
-            if (reslogin.errMsg == "login:ok") {
-              //发起网络请求
-              wx.request({
-                url: `${requestProfix}/api/wxapp/user/login`,
-                // url: "http://127.0.0.1:10020/api/wxapp/user/login",
-                method: "post",
-                data: {
-                  code: reslogin.code,
-                  raw_data: resget.rawData,
-                  signature: resget.signature,
-                  iv: resget.iv,
-                  encrypted_data: resget.encryptedData
-                },
-                success: (res) => {
-                  let rest = res.data;
-                  if (res.data.status == 0) {
-                    wx.hidenM
-                    // 存储用户信息
-                    wx.setStorage({
-                      key: 'userInfo',
-                      data: rest.data
-                    })
-                    // 存储token
-                    wx.setStorage({
-                      key: 'token',
-                      data: rest.data.token
-                    })
-
-                    // 登录成功后跳转
-                    setTimeout(() => {
-                      this.navigateAfterLogin();
-                    }, 100);
-                  } else {
-                    wx.showToast({
-                      title: '服务器 ' + res.data.status + ' 错误',
-                      icon: 'none'
-                    });
-                  }
-                }
-              })
-            } else {
-              console.log('登录失败！' + res.errMsg)
-            }
-          }
-        })
-      }
-    })
-  },
   bindgetuserinfo(res) {
     console.log("res", res)
     if (res.detail.errMsg == 'getUserInfo:ok') {
@@ -158,8 +102,11 @@ Page({
           console.log("res", res)
           let code = e.code; //调用wx.login，获取登录凭证（code），并调用接口，将code发送到第三方客户端 
           //封装加密数据
-          var encryptedObj = getApp().globalObj.sysCommon.buildEncryptionObj(res.detail.rawData);
-          var promise = getApp().globalObj.requestUtils.ccPost("/api/wxapp/user/login", {
+          let encryptedObj = getApp().globalObj.sysCommon.buildEncryptionObj(res.detail.rawData);
+          //暂时不追api前缀
+          // getApp().globalObj.requestUtils.requestHost("plat");
+          let requestApi = "/api/wxapp/user/login";
+          let promise = getApp().globalObj.requestUtils.ccPost(requestApi, {
             code: e.code,
             // raw_data: res.detail.rawData,
             encrypted_data_row: encryptedObj,
@@ -192,7 +139,7 @@ Page({
                 icon: 'success', // 显示对勾图标
                 duration: 1500
               });
-              
+
               // 登录成功后跳转
               setTimeout(() => {
                 this.navigateAfterLogin();

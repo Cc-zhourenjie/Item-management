@@ -14,8 +14,28 @@ let flag = false;
  */
 function checkLogin(returnUrl = '', cancelCallBack, failCallBack) {
   var token = wx.getStorageSync("token");
+  debugger
+  // 没有token令牌，直接判定为【未登录】状态，跳转登录页面
   if (!token) {
     notLogin(returnUrl, cancelCallBack, failCallBack);
+  }
+  // 有token令牌，请求后端校验令牌是否有效
+  else {
+    let requestApi = "/api/wxapp/user/token/checktokenisvalid"
+    let promise = getApp().globalObj.requestUtils.ccPost(requestApi, {
+      token: token
+    }, undefined, { no_check_login: true });
+    promise.then(result => {
+      let rest = result.data;
+      if (result.error_code.code == "200") {
+        // 登录成功后跳转
+      } else {
+        wx.showToast({
+          title: '服务器错误',
+          icon: 'none'
+        });
+      }
+    });
   }
 }
 
