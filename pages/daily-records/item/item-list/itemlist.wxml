@@ -3,7 +3,9 @@
 
   <view class="container">
 
-    物品清单
+    <van-card num="2" price="2.00" desc="描述信息" title="商品标题"
+      thumb="http://127.0.0.1:10020/api/oss/file/browse/browse/1965704766113837057" />
+
 
   </view>
 

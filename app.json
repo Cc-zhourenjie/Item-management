@@ -1,9 +1,8 @@
 {
   "pages": [
-    "pages/index/index",
+    "pages/daily-records/item/item-index/itemindex",
     "pages/daily-records/item/add-info/addinfo",
     "pages/daily-records/item/item-list/itemlist",
-    "pages/daily-records/item/item-index/itemindex",
     "pages/login/login"
   ],
   "entryPagePath": "pages/daily-records/item/item-index/itemindex",

@@ -72,18 +72,25 @@ Page({
     let detail = e.detail;
     if ("add" == detail.key) {
       console.log("录入")
-      wx.navigateTo({
-        url: '/pages/daily-records/item/add-info/addinfo',
-        success: () => {
-          console.log('成功跳转新页面');
-        },
-        fail: (err) => {
-          wx.showToast({
-            title: '跳转失败',
-            icon: 'none'
-          });
-        }
+
+      getApp().globalObj.requestUtils.checkLogin('/pages/daily-records/item/add-info/addinfo', function () {
+        wx.navigateBack({
+          // delta: 1
+        })
       });
+
+      // wx.navigateTo({
+      //   url: '/pages/daily-records/item/add-info/addinfo',
+      //   success: () => {
+      //     console.log('成功跳转新页面');
+      //   },
+      //   fail: (err) => {
+      //     wx.showToast({
+      //       title: '跳转失败',
+      //       icon: 'none'
+      //     });
+      //   }
+      // });
     }
     else if ("my_item" == detail.key) {
       console.log("我的物品")

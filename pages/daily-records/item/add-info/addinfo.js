@@ -43,12 +43,7 @@ Page({
   },
   //监听页面加载
   onLoad() {
-    getApp().globalObj.requestUtils.checkLogin('', function () {
-      wx.navigateBack({
-        // delta: 1
-      })
-    });
-
+   
     const hours = Array.from({ length: 24 }, (_, i) =>
       i.toString().padStart(2, "0")
     );

@@ -27,9 +27,19 @@ Page({
     }
   },
   close() {
-    wx.switchTab({
-      url: '/pages/index/index'
-    })
+    wx.redirectTo({
+      url: '/pages/index/index',
+      success: () => {
+        console.log('关闭登录页面，跳转到首页');
+      },
+      fail: (err) => {
+        console.error('跳转失败:', err);
+        wx.showToast({
+          title: '跳转失败',
+          icon: 'none'
+        });
+      }
+    });
   },
 
   /**
@@ -41,31 +51,28 @@ Page({
     if (returnUrl) {
       // 如果有返回地址，跳转到指定页面
       console.log('跳转到返回页面:', returnUrl);
-      // 判断是否是 tabBar 页面
-      // const tabBarPages = ['/pages/index/index', '/pages/daily-records/item/add-info/addinfo'];
-      // if (tabBarPages.includes(returnUrl)) {
-      //   wx.switchTab({
-      //     url: returnUrl,
-      //     success: () => {
-      //       console.log('成功跳转到 tabBar 页面:', returnUrl);
-      //     },
-      //     fail: (err) => {
-      //       console.error('跳转到 tabBar 页面失败:', err);
-      //       this.fallbackNavigation();
-      //     }
-      //   });
-      // } else {
-      wx.navigateTo({
+      
+      // 使用 redirectTo 替换当前页面，避免返回时回到登录页
+      wx.redirectTo({
         url: returnUrl,
         success: () => {
-          console.log('成功跳转到普通页面:', returnUrl);
+          console.log('成功跳转到目标页面:', returnUrl);
         },
         fail: (err) => {
-          console.error('跳转到普通页面失败:', err);
-          this.fallbackNavigation();
+          console.error('跳转到目标页面失败:', err);
+          // 如果 redirectTo 失败，尝试使用 navigateTo
+          wx.navigateTo({
+            url: returnUrl,
+            success: () => {
+              console.log('使用 navigateTo 成功跳转到目标页面:', returnUrl);
+            },
+            fail: (err2) => {
+              console.error('navigateTo 也失败了:', err2);
+              this.fallbackNavigation();
+            }
+          });
         }
       });
-      // }
     } else {
       // 没有返回地址，使用默认跳转
       this.fallbackNavigation();
@@ -77,16 +84,27 @@ Page({
    */
   fallbackNavigation() {
     console.log('使用默认跳转逻辑');
-    wx.switchTab({
+    // 使用 redirectTo 跳转到默认页面，避免返回时回到登录页
+    wx.redirectTo({
       url: '/pages/index/index',
       success: () => {
         console.log('成功跳转到默认页面');
       },
       fail: (err) => {
-        console.error('跳转到默认页面也失败了:', err);
-        wx.showToast({
-          title: '跳转失败',
-          icon: 'none'
+        console.error('跳转到默认页面失败:', err);
+        // 如果 redirectTo 失败，尝试使用 navigateTo
+        wx.navigateTo({
+          url: '/pages/index/index',
+          success: () => {
+            console.log('使用 navigateTo 成功跳转到默认页面');
+          },
+          fail: (err2) => {
+            console.error('navigateTo 也失败了:', err2);
+            wx.showToast({
+              title: '跳转失败',
+              icon: 'none'
+            });
+          }
         });
       }
     });

@@ -3,8 +3,6 @@
  * @author cc
  */
 
-//是否登录
-let flag = false;
 
 /**
  * 检查登录状态
@@ -14,7 +12,6 @@ let flag = false;
  */
 function checkLogin(returnUrl = '', cancelCallBack, failCallBack) {
   var token = wx.getStorageSync("token");
-  debugger
   // 没有token令牌，直接判定为【未登录】状态，跳转登录页面
   if (!token) {
     notLogin(returnUrl, cancelCallBack, failCallBack);
@@ -26,20 +23,33 @@ function checkLogin(returnUrl = '', cancelCallBack, failCallBack) {
       token: token
     }, undefined, { no_check_login: true });
     promise.then(result => {
-      let rest = result.data;
-      if (result.error_code.code == "200") {
+      if (result.data || result.error_code.code == "200") {
         // 登录成功后跳转
+        wx.navigateTo({
+          url: returnUrl,
+          success: () => {
+            console.log('Token验证通过，成功跳转到目标页面:', returnUrl);
+          },
+          fail: (err2) => {
+            console.error('oken验证通过，跳转失败了:', err2);
+          }
+        });
       } else {
         wx.showToast({
-          title: '服务器错误',
+          title: result.error_code.message,
           icon: 'none'
         });
+        setTimeout(function () {
+          notLogin(returnUrl, cancelCallBack, failCallBack);
+        }, 1000);
       }
     });
   }
 }
 
 
+//是否登录
+let flag = false;
 /**
  * 未登录
  * @param {string} returnUrl 登录成功后要返回的页面路径
