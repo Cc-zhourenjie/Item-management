@@ -1,10 +1,13 @@
 <!--pages/daily-records/item/item-list/itemlist.wxml-->
 <scroll-view class="scrollarea" scroll-y type="list">
 
-  <view class="container">
+  <view>
 
     <van-card num="2" price="2.00" desc="描述信息" title="商品标题"
-      thumb="http://127.0.0.1:10020/api/oss/file/browse/browse/1965704766113837057" />
+      thumb="http://127.0.0.1:10020/api/oss/file/browse/browse/1967435179282669569"
+      thumb-link="http://127.0.0.1:10020/api/oss/file/browse/browse/1967435179282669569" />
+    <van-card wx:for="{{itemList}}" wx:key="index" num="{{item.num}}" price="{{item.price}}" desc="{{item.desc}}"
+      title="{{item.title}}" thumb="{{item.item_picture}}" thumb-link="{{item.item_picture}}" link-type="switchTab" />
 
 
   </view>
