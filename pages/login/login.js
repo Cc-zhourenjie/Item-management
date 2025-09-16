@@ -51,7 +51,7 @@ Page({
     if (returnUrl) {
       // 如果有返回地址，跳转到指定页面
       console.log('跳转到返回页面:', returnUrl);
-      
+
       // 使用 redirectTo 替换当前页面，避免返回时回到登录页
       wx.redirectTo({
         url: returnUrl,
@@ -118,6 +118,26 @@ Page({
       wx.login({
         success: e => {
           console.log("res", res)
+
+          // 存储用户信息
+          wx.setStorage({
+            key: 'userInfo',
+            data: {
+              "user_id": "1958435340842741762",
+              "open_id": "oE5RJ41SqxK8dAqdMt4E-BIT6ZlE",
+              "nick_name": "微信用户",
+              "gender": "0",
+              "avatar_url": "https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132",
+              "telephone": null,
+              "token": "7d72b530c9984bcf84a3d39b3717fe60"
+            }
+          });
+          // 存储token
+          wx.setStorage({
+            key: 'token',
+            data: "7d72b530c9984bcf84a3d39b3717fe60"
+          });
+          return true;
           let code = e.code; //调用wx.login，获取登录凭证（code），并调用接口，将code发送到第三方客户端 
           //封装加密数据
           let encryptedObj = getApp().globalObj.sysCommon.buildEncryptionObj(res.detail.rawData);

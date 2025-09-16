@@ -1,7 +1,7 @@
 <!--pages/daily-records/item/item-list/itemlist.wxml-->
 <scroll-view class="scrollarea" scroll-y type="list">
 
-  <view>
+  <!-- <view>
 
     <van-card num="2" price="2.00" desc="描述信息" title="商品标题"
       thumb="http://127.0.0.1:10020/api/oss/file/browse/browse/1967435179282669569"
@@ -10,6 +10,41 @@
       title="{{item.title}}" thumb="{{item.item_picture}}" thumb-link="{{item.item_picture}}" link-type="switchTab" />
 
 
+  </view> -->
+
+  <!-- 原生仿照 van-card 样式的卡片列表 -->
+  <view class="native-card-container">
+    <!-- 静态示例卡片 -->
+    <!-- <view class="native-card">
+      <view class="card-content">
+        <image class="card-thumb" src="http://127.0.0.1:10020/api/oss/file/browse/browse/1967435179282669569" mode="aspectFill"></image>
+        <view class="card-info">
+          <view class="card-title">商品标题</view>
+          <view class="card-desc">描述信息</view>
+          <view class="card-footer">
+            <view class="card-price">¥2.00</view>
+            <view class="card-num">数量: 2</view>
+          </view>
+        </view>
+      </view>
+    </view> -->
+
+    <!-- 动态循环的卡片列表 -->
+    <view class="native-card" wx:for="{{itemList}}" wx:key="index">
+      <view class="card-content">
+        <image class="card-thumb" src="{{item.item_picture}}" mode="aspectFill" data-index="{{index}}"
+          bindload="onThumbLoad" binderror="onThumbError" bindtap="onPreviewImage"></image>
+        <view class="card-info">
+          <view class="card-title">{{item.title}}</view>
+          <view class="card-desc">{{item.expiration_time_remark}}</view>
+          <view class="card-desc">到期：{{item.valid_date}}</view>
+          <view class="card-footer">
+            <view class="card-price">¥{{item.item_price}}</view>
+            <view class="card-num">剩余: {{item.remaining}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
   </view>
 
 </scroll-view>

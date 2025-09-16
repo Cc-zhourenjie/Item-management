@@ -26,12 +26,17 @@ Page({
         console.log(rawList)
         // 规范化为 van-card 需要的字段
         const normalized = rawList.map((row) => {
+
+          let num = row.item_number - row.item_used_number;
+          let numPercentage = Math.trunc(((row.item_number - row.item_used_number) / row.item_number) * 100);
+
           return {
             // 可根据实际返回字段名替换，如 row.quantity, row.amount, row.remark, row.name, row.imageUrl
-            num: row.item_number,
-            price: row.item_price,
-            desc: row.desc || row.remark || "",
             title: row.item_name,
+            expiration_time_remark: row.expiration_time_remark,
+            valid_date: getApp().globalObj.timeUtils.formatDate(row.valid_date),
+            item_price: row.item_price,
+            remaining: num + "(" + (numPercentage + "%") + ")",
             item_picture: row.item_picture ? ("http://127.0.0.1:10020/api/oss/file/browse/browse/" + row.item_picture) : this.data.defaultThumb
           }
         });
@@ -68,6 +73,38 @@ Page({
         this.setData({ itemList: list });
       }
     }
+  },
+
+  // 预览大图
+  onPreviewImage(e) {
+    const index = e.currentTarget.dataset.index;
+    const urls = (this.data.itemList || []).map(it => it.item_picture);
+    if (!urls || urls.length === 0) {
+      return;
+    }
+    const current = urls[index] || urls[0];
+    if (!current) {
+      return;
+    }
+
+    wx.showLoading({ title: '加载中', mask: true });
+    wx.downloadFile({
+      url: current,
+      success: (res) => {
+        const tempPath = res.tempFilePath;
+        if (res.statusCode === 200 && tempPath) {
+          wx.previewImage({ current: tempPath, urls: [tempPath] });
+        } else {
+          wx.previewImage({ current, urls });
+        }
+      },
+      fail: () => {
+        wx.previewImage({ current, urls });
+      },
+      complete: () => {
+        wx.hideLoading();
+      }
+    });
   },
 
   /**

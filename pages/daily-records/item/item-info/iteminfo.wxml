@@ -1,4 +1,4 @@
-<!--pages/daily-record/addinfo.wxml-->
+<!--pages/daily-record/iteminfo.wxml-->
 
 <scroll-view class="scrollarea" scroll-y type="list">
 

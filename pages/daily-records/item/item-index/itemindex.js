@@ -73,14 +73,21 @@ Page({
     if ("add" == detail.key) {
       console.log("录入")
 
-      getApp().globalObj.requestUtils.checkLogin('/pages/daily-records/item/add-info/addinfo', function () {
+      getApp().globalObj.requestUtils.checkLogin('/pages/daily-records/item/item-info/iteminfo', function () {
         wx.navigateBack({
           // delta: 1
         })
       });
-
+    }
+    else if ("my_item" == detail.key) {
+      console.log("我的物品")
+      getApp().globalObj.requestUtils.checkLogin('/pages/daily-records/item/item-list/itemlist', function () {
+        wx.navigateBack({
+          // delta: 1
+        })
+      });
       // wx.navigateTo({
-      //   url: '/pages/daily-records/item/add-info/addinfo',
+      //   url: '/pages/daily-records/item/item-list/itemlist',
       //   success: () => {
       //     console.log('成功跳转新页面');
       //   },
@@ -91,21 +98,6 @@ Page({
       //     });
       //   }
       // });
-    }
-    else if ("my_item" == detail.key) {
-      console.log("我的物品")
-      wx.navigateTo({
-        url: '/pages/daily-records/item/item-list/itemlist',
-        success: () => {
-          console.log('成功跳转新页面');
-        },
-        fail: (err) => {
-          wx.showToast({
-            title: '跳转失败',
-            icon: 'none'
-          });
-        }
-      });
     }
     else if ("use_record" == detail.key) {
       console.log("使用记录")

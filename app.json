@@ -1,7 +1,7 @@
 {
   "pages": [
     "pages/daily-records/item/item-index/itemindex",
-    "pages/daily-records/item/add-info/addinfo",
+    "pages/daily-records/item/item-info/iteminfo",
     "pages/daily-records/item/item-list/itemlist",
     "pages/login/login"
   ],
