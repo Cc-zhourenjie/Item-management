@@ -58,12 +58,15 @@ Page({
     this.setData({ hours, minutes, seconds });
     //加载编辑数据
     const eventChannel = this.getOpenerEventChannel()
-    eventChannel.on('acceptData', (data) => {
-      let url = getApp().globalObj.requestUtils.requestHost("dr") + "/api/dr/item/info/finditeminfobyitemid/" + data.item_info_id;
-      getApp().globalObj.requestUtils.ccGet(url, null, { is_append_prefix: false, }).then((result) => {
-        this.setData(result.data);
-      });
-    })
+    if (eventChannel) {
+      eventChannel.on('acceptData', (data) => {
+        let url = getApp().globalObj.requestUtils.requestHost("dr") + "/api/dr/item/info/finditeminfobyitemid/" + data.item_info_id;
+        getApp().globalObj.requestUtils.ccGet(url, null, { is_append_prefix: false, }).then((result) => {
+          this.setData(result.data);
+        });
+      })
+    }
+
   },
   //监听页面初次渲染完成
   onReady() {
@@ -335,10 +338,22 @@ Page({
           duration: 1500
         });
         setTimeout(function () {
+          // 回传数据给上一个页面
+          try {
+            const eventChannel = (typeof this.getOpenerEventChannel === 'function') ? this.getOpenerEventChannel() : null;
+            if (eventChannel && eventChannel.emit) {
+              eventChannel.emit('backData', {
+                updated: true,
+                item_info_id: this.data
+              });
+            }
+          } catch (e) {
+            // ignore
+          }
           wx.navigateBack({
             // delta: 1
           })
-        }, 500);
+        }.bind(this), 500);
       }
       else {
         wx.showToast({

@@ -126,11 +126,23 @@ Page({
     //   duration: 2000
     // });
     const param = { item_info_id: item.item_info_id }
+    const that = this;
     wx.navigateTo({
       url: '/pages/daily-records/item/item-info/iteminfo',
       success: (res) => {
         console.log('成功跳转新页面');
+        // 传递参数给下个页面
         res.eventChannel.emit('acceptData', param)
+        // 监听返回时的数据
+        res.eventChannel.on('backData', function (data) {
+          // 简单策略：收到更新标记后刷新当前列表
+          if (data && data.updated) {
+            // 直接复用 onLoad 的拉取逻辑
+            if (typeof that.onLoad === 'function') {
+              that.onLoad();
+            }
+          }
+        });
       },
       fail: (err) => {
         wx.showToast({

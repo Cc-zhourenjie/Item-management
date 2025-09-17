@@ -282,7 +282,7 @@ function getBrowseUrl(fileId) {
 //后端请求地址
 function requestHost(appCode) {
   var backUrl = {
-    "common": "http://192.168.14.112:10020",
+    "common": "http://127.0.0.1:10020",
   }
   var url = backUrl[appCode] ? backUrl[appCode] : backUrl["common"]
   return url;
