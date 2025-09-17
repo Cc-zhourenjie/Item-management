@@ -38,7 +38,7 @@
           <view class="plain-text">{{ open_day || '-' }}</view>
         </l-form-item>
         <l-form-item label="状态：" labelPlacement="row" alignItems="center" name="item_state">
-          <view class="plain-text">{{ item_state || '-' }}</view>
+          <view class="plain-text">{{ item_state_bak }}</view>
         </l-form-item>
       </l-form>
     </l-card>
@@ -71,7 +71,12 @@
     <!-- 产品有效期 -->
     <l-card type="cover" plaintext="true">
       <view class="sub-title">提供两种模式输入物品有效使用期</view>
-      <l-button size="mini" bind:lintap="onChooseExpirationType">切换到有效期模式</l-button>
+      <l-button size="mini" wx:if="{{item_shelf_life_mode === 'shelf_life'}}" bind:lintap="onChooseExpirationType">
+        切换到有效期模式
+      </l-button>
+      <l-button size="mini" wx:if="{{item_shelf_life_mode != 'shelf_life'}}" bind:lintap="onChooseExpirationType">
+        切换到保质期模式
+      </l-button>
       <l-form name="expireForm" is-submit-validate="{{false}}">
         <l-form-item label="生产日期：" wx:if="{{item_shelf_life_mode === 'shelf_life'}}" labelPlacement="row"
           alignItems="center" name="production_date">

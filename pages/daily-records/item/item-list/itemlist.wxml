@@ -30,19 +30,29 @@
     </view> -->
 
     <!-- 动态循环的卡片列表 -->
-    <view class="native-card" wx:for="{{itemList}}" wx:key="index">
+    <view class="native-card" wx:for="{{itemList}}" wx:key="index" data-index="{{index}}">
       <view class="card-content">
         <image class="card-thumb" src="{{item.item_picture}}" mode="aspectFill" data-index="{{index}}"
           bindload="onThumbLoad" binderror="onThumbError" bindtap="onPreviewImage"></image>
-        <view class="card-info">
+        <view class="card-info" data-index="{{index}}" bindtap="onCardClick">
           <view class="card-title">{{item.title}}</view>
           <view class="card-desc">{{item.expiration_time_remark}}</view>
           <view class="card-desc">到期：{{item.valid_date}}</view>
+          <view class="card-desc">剩余: {{item.remaining}}{{item.remaining_unit}}{{item.remaining_ercentage}}</view>
           <view class="card-footer">
             <view class="card-price">¥{{item.item_price}}</view>
-            <view class="card-num">剩余: {{item.remaining}}</view>
+            <!-- <view class="card-num">剩余: {{item.remaining}}</view> -->
           </view>
         </view>
+      </view>
+      <!-- 卡片右下角编辑按钮（仅样式，无点击事件） -->
+      <view class="card-actions">
+        <view class="card-action action-edit">
+          <text class="card-action-icon">✎</text>
+        </view>
+        <!-- <view class="card-action action-add">
+          <text class="card-action-icon">+</text>
+        </view> -->
       </view>
     </view>
   </view>

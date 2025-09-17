@@ -12,6 +12,7 @@
   box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.1);
   margin-bottom: 20rpx;
   overflow: hidden;
+  position: relative;
 }
 
 /* 卡片内容布局 */
@@ -85,4 +86,80 @@
   background: #f7f8fa;
   padding: 4rpx 12rpx;
   border-radius: 12rpx;
+}
+
+/* 卡片内右下角编辑按钮组 */
+.card-actions {
+  position: absolute;
+  right: 20rpx;
+  bottom: 20rpx;
+  display: flex;
+  gap: 16rpx;
+}
+
+.card-action {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 30rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.12);
+  background: linear-gradient(135deg, #4e73df, #6f9cf7);
+  color: #fff;
+}
+
+.card-action:active {
+  transform: scale(0.96);
+  opacity: 0.95;
+}
+
+.card-action-icon {
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+.action-edit { background: linear-gradient(135deg, #ff8a5b, #ff6b35); }
+.action-add  { background: linear-gradient(135deg, #22c55e, #16a34a); }
+
+/* 悬浮按钮组 */
+.fab-group {
+  position: fixed;
+  right: 32rpx;
+  bottom: 48rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  z-index: 999;
+}
+
+.fab-button {
+  width: 104rpx;
+  height: 104rpx;
+  border-radius: 52rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12rpx 32rpx rgba(0, 0, 0, 0.15);
+  background: linear-gradient(135deg, #4e73df, #6f9cf7);
+  color: #fff;
+}
+
+.fab-button:active {
+  transform: scale(0.96);
+  opacity: 0.95;
+}
+
+.fab-icon {
+  font-size: 48rpx;
+  font-weight: 700;
+}
+
+/* 不同语义按钮可定义不同渐变色 */
+.fab-edit {
+  background: linear-gradient(135deg, #ff8a5b, #ff6b35);
+}
+
+.fab-add {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
 }

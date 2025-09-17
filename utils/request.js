@@ -269,18 +269,26 @@ function ccPost(url, data = {}, header = {}, config = {}) {
   return ccRequest(url, data, header, "POST", config);
 }
 
+/**
+ * 获取预览文件的地址
+ * @param {文件id} fileId 
+ * @returns 
+ */
+function getBrowseUrl(fileId) {
+  let url = requestHost("oss") + "/api/oss/file/browse/browse/" + fileId;
+  return url;
+}
 
 //后端请求地址
 function requestHost(appCode) {
   var backUrl = {
-    "common": "http://127.0.0.1:10020",
+    "common": "http://192.168.14.112:10020",
   }
   var url = backUrl[appCode] ? backUrl[appCode] : backUrl["common"]
   return url;
 }
 
-
-//请求前缀
+//默认请求前缀
 const requestProfix = requestHost("common");
 
 
@@ -289,6 +297,7 @@ module.exports = {
   notLogin,
   checkLogin,
   // requestProfix,
+  getBrowseUrl,
   requestHost,
   ccGet,
   ccPost

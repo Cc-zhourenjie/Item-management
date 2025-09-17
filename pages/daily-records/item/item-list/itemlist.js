@@ -1,8 +1,6 @@
 // pages/daily-records/item/item-list/itemlist.js
 Page({
 
-
-
   /**
    * 页面的初始数据
    */
@@ -26,18 +24,19 @@ Page({
         console.log(rawList)
         // 规范化为 van-card 需要的字段
         const normalized = rawList.map((row) => {
-
           let num = row.item_number - row.item_used_number;
           let numPercentage = Math.trunc(((row.item_number - row.item_used_number) / row.item_number) * 100);
-
+          //组织字段
           return {
-            // 可根据实际返回字段名替换，如 row.quantity, row.amount, row.remark, row.name, row.imageUrl
+            item_info_id: row.item_info_id,
             title: row.item_name,
             expiration_time_remark: row.expiration_time_remark,
             valid_date: getApp().globalObj.timeUtils.formatDate(row.valid_date),
             item_price: row.item_price,
-            remaining: num + "(" + (numPercentage + "%") + ")",
-            item_picture: row.item_picture ? ("http://127.0.0.1:10020/api/oss/file/browse/browse/" + row.item_picture) : this.data.defaultThumb
+            remaining: num,
+            remaining_unit: row.item_number_unit,
+            remaining_ercentage: "(" + (numPercentage + "%") + ")",
+            item_picture: row.item_picture ? getApp().globalObj.requestUtils.getBrowseUrl(row.item_picture) : this.data.defaultThumb
           }
         });
         this.setData({ itemList: normalized });
@@ -103,6 +102,41 @@ Page({
       },
       complete: () => {
         wx.hideLoading();
+      }
+    });
+  },
+
+  // 卡片点击事件
+  onCardClick(e) {
+    const index = e.currentTarget.dataset.index;
+    const item = this.data.itemList[index];
+
+    if (!item) {
+      console.log('点击的卡片数据不存在');
+      return;
+    }
+
+    console.log('点击了卡片:', item);
+
+    // 这里可以添加您需要的业务逻辑
+    // 例如：跳转到详情页、显示更多信息等
+    // wx.showToast({
+    //   title: `点击了: ${item.title}`,
+    //   icon: 'none',
+    //   duration: 2000
+    // });
+    const param = { item_info_id: item.item_info_id }
+    wx.navigateTo({
+      url: '/pages/daily-records/item/item-info/iteminfo',
+      success: (res) => {
+        console.log('成功跳转新页面');
+        res.eventChannel.emit('acceptData', param)
+      },
+      fail: (err) => {
+        wx.showToast({
+          title: '当前不能查看详情',
+          icon: 'none'
+        });
       }
     });
   },

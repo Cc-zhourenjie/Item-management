@@ -132,12 +132,12 @@ Page({
               "token": "7d72b530c9984bcf84a3d39b3717fe60"
             }
           });
-          // 存储token
-          wx.setStorage({
-            key: 'token',
-            data: "7d72b530c9984bcf84a3d39b3717fe60"
-          });
-          return true;
+          // 测试存储token
+          // wx.setStorage({
+          //   key: 'token',
+          //   data: "7d72b530c9984bcf84a3d39b3717fe60"
+          // });
+          // return true;
           let code = e.code; //调用wx.login，获取登录凭证（code），并调用接口，将code发送到第三方客户端 
           //封装加密数据
           let encryptedObj = getApp().globalObj.sysCommon.buildEncryptionObj(res.detail.rawData);

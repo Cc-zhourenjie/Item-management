@@ -2,11 +2,13 @@
 Page({
   data: {
     // 基本信息
+    item_info_id: "",
     item_name: "",
     item_barcode: "000020250819025525",
     item_code: "20250819025525",
     open_day: "",
-    item_state: "-",
+    item_state: "0",
+    item_state_bak: "-",
 
     // 数量与价格
     item_number: 1,
@@ -43,7 +45,7 @@ Page({
   },
   //监听页面加载
   onLoad() {
-   
+
     const hours = Array.from({ length: 24 }, (_, i) =>
       i.toString().padStart(2, "0")
     );
@@ -54,6 +56,14 @@ Page({
       i.toString().padStart(2, "0")
     );
     this.setData({ hours, minutes, seconds });
+    //加载编辑数据
+    const eventChannel = this.getOpenerEventChannel()
+    eventChannel.on('acceptData', (data) => {
+      let url = getApp().globalObj.requestUtils.requestHost("dr") + "/api/dr/item/info/finditeminfobyitemid/" + data.item_info_id;
+      getApp().globalObj.requestUtils.ccGet(url, null, { is_append_prefix: false, }).then((result) => {
+        this.setData(result.data);
+      });
+    })
   },
   //监听页面初次渲染完成
   onReady() {
@@ -61,18 +71,6 @@ Page({
       wx.lin.initValidateForm(this);
     }
   },
-  // 原生日期选择器变更
-  // onNativeDateChange(e) {
-  //   const { value } = e.detail
-  //   const key = this.data.pickerTarget
-  //   if (!key) {
-  //     this.setData({ selected_date: value })
-  //     return
-  //   }
-  //   this.setData({ [key]: value, selected_date: value }, () => {
-  //     if (key === 'production_date') this.computeExpireDate()
-  //   })
-  // },
 
   // 输入名称处理
   onItemNameInput(e) {
@@ -315,11 +313,13 @@ Page({
     }
 
     //格式化数据
-    jsonValue.item_state = jsonValue.item_state == "-" ? 0 : jsonValue.item_state;
+    // jsonValue.item_state = jsonValue.item_state == "-" ? 0 : jsonValue.item_state;
     jsonValue.item_price = getApp().globalObj.utils.isEmptyString(jsonValue.item_price) ? 0 : jsonValue.item_price;
     jsonValue.open_day = getApp().globalObj.timeUtils.dateStringToTimestamp(jsonValue.open_day);
     jsonValue.production_date = getApp().globalObj.timeUtils.dateStringToTimestamp(jsonValue.production_date);
     jsonValue.valid_date = getApp().globalObj.timeUtils.dateStringToTimestamp(jsonValue.valid_date);
+    jsonValue.create_date = getApp().globalObj.timeUtils.dateStringToTimestamp(jsonValue.create_date);
+    jsonValue.update_date = getApp().globalObj.timeUtils.dateStringToTimestamp(jsonValue.update_date);
 
     //封装加密数据
     var encryptedObj = getApp().globalObj.sysCommon.buildEncryptionObj(jsonValue);
@@ -340,12 +340,13 @@ Page({
           })
         }, 500);
       }
-      wx.showToast({
-        title: '录入失败',
-        icon: 'error', // 显示对勾图标
-        duration: 1500
-      });
-
+      else {
+        wx.showToast({
+          title: '录入失败',
+          icon: 'error', // 显示对勾图标
+          duration: 1500
+        });
+      }
     });
   },
   //校验需要保存的数据
