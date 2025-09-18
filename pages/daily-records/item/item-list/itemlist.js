@@ -29,7 +29,8 @@ Page({
           //组织字段
           return {
             item_info_id: row.item_info_id,
-            title: row.item_name,
+            item_name: row.item_name,
+            item_state:row.item_state,
             expiration_time_remark: row.expiration_time_remark,
             valid_date: getApp().globalObj.timeUtils.formatDate(row.valid_date),
             item_price: row.item_price,

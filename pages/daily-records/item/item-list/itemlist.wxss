@@ -163,3 +163,7 @@
 .fab-add {
   background: linear-gradient(135deg, #22c55e, #16a34a);
 }
+
+/* 状态色 */
+.text-red { color: #e11d48; }
+.text-green { color: #16a34a; }
