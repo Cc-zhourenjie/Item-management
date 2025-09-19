@@ -4,24 +4,31 @@
 
   <!-- -------------------------------------------------- -->
   <view class="container">
-    <!-- <l-card type="cover" plaintext="true">
-      <l-form name="student" l-form-btn-class="l-form-btn-class" bind:linsubmit="submit">
-        <l-form-item label="姓名:" name="studentName">
-          <l-input id="studentName" placeholder="请输入物品购买花费" value="{{student.name}}" hide-label show-row="{{false}}" />
-        </l-form-item>
-        <l-form-item label="年龄:" name="studentAge">
-          <l-input id="studentAge" value="{{student.age}}" hide-label show-row="{{false}}" />
-        </l-form-item>
-        <l-form-item label="地址:" name="studentAddress">
-          <l-input id="studentName" placeholder="请输入物品购买花费sasdsad" value="{{student.name}}" hide-label show-row="{{false}}" />
-        </l-form-item>
-      </l-form>
-    </l-card> -->
     <!-- 消息提醒标签 -->
     <l-message />
     <!-- 产品基本信息 -->
     <l-card type="cover" plaintext="true">
       <l-form name="basicForm" is-submit-validate="{{false}}">
+        <!-- 图片上传控件 -->
+        <l-form-item label="物品图片：" labelPlacement="row" alignItems="flex-start" name="item_image">
+          <view class="image-upload-container">
+            <!-- 已上传的图片 -->
+            <view class="image-item" wx:if="{{item_picture}}" bindtap="onChooseImage">
+              <image class="uploaded-image" src="{{item_picture}}" mode="aspectFill" data-url="{{item_image}}"></image>
+              <view class="image-delete" bindtap="onDeleteImage">
+                <text class="delete-icon">X</text>
+              </view>
+            </view>
+
+            <!-- 上传按钮 -->
+            <view class="upload-btn" wx:if="{{!item_picture}}" bindtap="onChooseImage">
+              <view class="upload-icon">+</view>
+              <text class="upload-text">添加图片</text>
+              <text class="upload-tip">选择一张图片</text>
+            </view>
+          </view>
+        </l-form-item>
+
         <l-form-item label="物品名称：" labelPlacement="row" alignItems="center" name="item_name">
           <textarea class="form-control textarea" placeholder="物品名称" auto-height value="{{item_name}}"
             bindinput="onItemNameInput">
@@ -31,6 +38,9 @@
         <l-form-item label="条码：" labelPlacement="row" alignItems="center" name="item_barcode">
           <l-input value="{{item_barcode}}" hide-label bindinput="onItemBarcodeInput" />
         </l-form-item>
+
+
+
         <l-form-item label="入库批次：" labelPlacement="row" alignItems="center" name="item_code">
           <l-input disabled value="{{item_code}}" hide-label />
         </l-form-item>

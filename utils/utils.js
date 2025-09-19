@@ -4,6 +4,18 @@
  */
 
 /**
+ * 随机生成guid
+ * @returns guid
+ */
+function guid() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    let r = Math.random() * 16 | 0,
+      v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
+/**
 * 
 * @param {当前页面对象} that 
 * @param {需要重置的属性名} key 
@@ -67,6 +79,7 @@ function isEmptyString(str) {
 
 // 暴露接口
 module.exports = {
+  guid,
   setData,
   deepMerge,
   generateRandomBytes,

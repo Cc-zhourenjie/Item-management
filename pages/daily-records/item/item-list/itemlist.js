@@ -6,7 +6,7 @@ Page({
    */
   data: {
     itemList: [],
-    defaultThumb: "http://127.0.0.1:10020/api/oss/file/browse/browse/1967435179282669569"
+    defaultThumb: "/pages/daily-records/item/item-list/image/335RN-NbIyJcJlu6HdyMb2.png"
   },
   appGlobal: getApp().globalObj,
 
@@ -30,7 +30,7 @@ Page({
           return {
             item_info_id: row.item_info_id,
             item_name: row.item_name,
-            item_state:row.item_state,
+            item_state: row.item_state,
             expiration_time_remark: row.expiration_time_remark,
             valid_date: getApp().globalObj.timeUtils.formatDate(row.valid_date),
             item_price: row.item_price,
@@ -86,25 +86,38 @@ Page({
     if (!current) {
       return;
     }
+    // 判断是否为本地图片（不以 http 开头）
+    const isLocalImage = !current.startsWith('http');
 
-    wx.showLoading({ title: '加载中', mask: true });
-    wx.downloadFile({
-      url: current,
-      success: (res) => {
-        const tempPath = res.tempFilePath;
-        if (res.statusCode === 200 && tempPath) {
-          wx.previewImage({ current: tempPath, urls: [tempPath] });
-        } else {
+    if (isLocalImage) {
+      // 本地图片直接预览
+      // wx.previewImage({ current: current, urls: urls });
+      wx.showToast({
+        title: '暂无物品图',
+        icon: 'error', // 显示对勾图标
+        duration: 1500
+      });
+    } else {
+      // 网络图片需要先下载
+      wx.showLoading({ title: '加载中', mask: true });
+      wx.downloadFile({
+        url: current,
+        success: (res) => {
+          const tempPath = res.tempFilePath;
+          if (res.statusCode === 200 && tempPath) {
+            wx.previewImage({ current: tempPath, urls: [tempPath] });
+          } else {
+            wx.previewImage({ current, urls });
+          }
+        },
+        fail: () => {
           wx.previewImage({ current, urls });
+        },
+        complete: () => {
+          wx.hideLoading();
         }
-      },
-      fail: () => {
-        wx.previewImage({ current, urls });
-      },
-      complete: () => {
-        wx.hideLoading();
-      }
-    });
+      });
+    }
   },
 
   // 卡片点击事件
