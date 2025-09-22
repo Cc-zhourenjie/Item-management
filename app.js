@@ -16,7 +16,6 @@ App({
     const timeUtils = require('/utils/time.js');
     const securitySM2 = require('/components/security/sm2.js');
     const securitySM4 = require('/components/security/sm4.js');
-    const uploadFile = require('/utils/uploadfile.js');
 
     this.globalObj = this.globalObj || {}
     this.globalObj.sysCommon = sysCommon
@@ -25,7 +24,6 @@ App({
     this.globalObj.timeUtils = timeUtils
     this.globalObj.securitySM2 = securitySM2
     this.globalObj.securitySM4 = securitySM4
-    this.globalObj.uploadFile = uploadFile
 
     //加载系统基本配置数据
     let url = this.globalObj.requestUtils.requestHost("plat") + "/api/plat/system/findsystembaseconfig";

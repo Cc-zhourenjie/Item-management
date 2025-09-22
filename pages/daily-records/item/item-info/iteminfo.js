@@ -10,6 +10,7 @@ Page({
     item_state: "0",
     item_state_bak: "-",
     item_picture: "", // 物品图片
+    item_picture_url: "", // 物品图片
 
     // 数量与价格
     item_number: 1,
@@ -58,16 +59,16 @@ Page({
     this.setData({ hours, minutes, seconds });
     //加载编辑数据
     const eventChannel = this.getOpenerEventChannel()
-    if (eventChannel) {
+    if (eventChannel && eventChannel.on) {
       eventChannel.on('acceptData', (data) => {
         let url = getApp().globalObj.requestUtils.requestHost("dr") + "/api/dr/item/info/finditeminfobyitemid/" + data.item_info_id;
         getApp().globalObj.requestUtils.ccGet(url, null, { is_append_prefix: false, }).then((result) => {
           // 处理图片数据
           if (!result.data.item_picture) {
-            result.data.item_picture = "";
+            result.data.item_picture_url = "";
           }
           else {
-            result.data.item_picture = getApp().globalObj.requestUtils.getBrowseUrl(result.data.item_picture)
+            result.data.item_picture_url = getApp().globalObj.requestUtils.getBrowseUrl(result.data.item_picture)
           }
           this.setData(result.data);
         });
@@ -456,7 +457,7 @@ Page({
       type: 'image',
       success(res) {
         const file = res.tempFiles[0];
-        console.log(file.name); // 原始文件名
+        console.log(file); // 原始文件名
         that.uploadImage(file);
       },
       fail: (err) => {
@@ -496,44 +497,49 @@ Page({
       title: '上传中...',
       mask: true
     });
+    let uploadId = getApp().globalObj.utils.guid();
     wx.uploadFile({
       url: getApp().globalObj.requestUtils.requestHost("oss") + "/api/oss/file/fileinfo/uploadfile",
       filePath: tempFile.path,
       name: 'file',
-      formData: JSON.stringify({
-        upload_id: "123456",
-        file_name: tempFile.name,
-        file_size: tempFile.size,
-        chunk_count: 1,
-        chunk_current: 1,
-        store_area_code: "dr",
-      }),
+      formData: {
+        param: JSON.stringify({
+          upload_id: uploadId,
+          file_name: tempFile.name,
+          file_size: tempFile.size,
+          store_area_code: "dr",
+          chunk_count: 1,
+          chunk_current: 1,
+        })
+      },
       header: {
         'Content-Type': 'multipart/form-data',
-        'request-type': 'WeChat'
+        'request-type': 'WeChat',
+        "accesstoken": wx.getStorageSync("token")
       },
       success: (uploadRes) => {
         try {
           const result = JSON.parse(uploadRes.data);
-          debugger
-          // if (result.success) {
-          //   this.setData({
-          //     item_image: result.data.url
-          //   });
-          //   wx.hideLoading();
-          //   wx.lin.showMessage({
-          //     duration: 2000,
-          //     type: "success",
-          //     content: "图片上传成功",
-          //   });
-          // } else {
-          //   wx.hideLoading();
-          //   wx.lin.showMessage({
-          //     duration: 2000,
-          //     type: "error",
-          //     content: result.message || '上传失败',
-          //   });
-          // }
+          console.log(result);
+          if (result.success) {
+            this.setData({
+              item_picture: result.data.file_id,
+              item_picture_url: getApp().globalObj.requestUtils.getBrowseUrl(result.data.file_id)
+            });
+            wx.hideLoading();
+            wx.lin.showMessage({
+              duration: 2000,
+              type: "success",
+              content: "图片上传成功",
+            });
+          } else {
+            wx.hideLoading();
+            wx.lin.showMessage({
+              duration: 2000,
+              type: "error",
+              content: result.message || '上传失败',
+            });
+          }
         } catch (e) {
           wx.hideLoading();
           wx.lin.showMessage({
@@ -541,6 +547,8 @@ Page({
             type: "error",
             content: "服务器响应格式错误",
           });
+          // 异步完成后关闭
+          wx.hideLoading();
         }
       },
       fail: (err) => {
@@ -549,8 +557,10 @@ Page({
         wx.lin.showMessage({
           duration: 2000,
           type: "error",
-          content: "上传图片失败",
+          content: "上传失败",
         });
+        // 异步完成后关闭
+        wx.hideLoading();
       }
     });
   },
@@ -562,109 +572,26 @@ Page({
       content: '确定要删除这张图片吗？',
       success: (res) => {
         if (res.confirm) {
-          this.setData({
-            item_picture: ""
+          //逻辑删除文件
+          let url = getApp().globalObj.requestUtils.requestHost("oss") + "/api/oss/file/fileinfo/deletefilebyids";
+          getApp().globalObj.requestUtils.ccPost(url, [this.data.item_picture], null, { is_append_prefix: false, }).then((result) => {
+            console.log(result);
+            if (result.data) {
+              this.setData({
+                item_picture: "",
+                item_picture_url: ""
+              });
+              wx.lin.showMessage({
+                duration: 1500,
+                type: "success",
+                content: "图片已删除",
+              });
+            }
           });
-          wx.lin.showMessage({
-            duration: 1500,
-            type: "success",
-            content: "图片已删除",
-          });
+
         }
       }
     });
   },
 
-  _chunkUploadCancelled: true,
-
-  // ==================== 分片上传实现（可替代 uploadImage） ====================
-  // 说明：
-  // - 将图片读取为 ArrayBuffer 后按固定大小切片；
-  // - 每片写入临时文件，再通过 wx.uploadFile 逐片上传；
-  // - 全部上传完调用合并接口获取最终 URL；
-  // - 服务端需要提供 init/chunk/merge 三个接口（下方注明参数约定）。
-  uploadImageChunked(tempFile, options = {}) {
-
-    wx.showLoading({ title: '准备上传...', mask: true });
-
-    // const fs = wx.getFileSystemManager();
-    // // 读取整文件为 ArrayBuffer
-    // const fileBuffer = fs.readFileSync(tempFile.tempFilePath);
-    // const fileSize = fileBuffer.byteLength || tempFile.size || 0;
-    // const totalChunks = Math.max(1, Math.ceil(fileSize / chunkSize));
-    // const fileName = (tempFile.tempFilePath || '').split('/').pop() || `upload_${Date.now()}.jpg`;
-    // const fileExt = fileName.includes('.') ? fileName.split('.').pop() : 'jpg';
-
-    // 1) 初始化上传，拿到 uploadId（服务端生成）
-
-    debugger
-    let fileObj = tempFile;
-    let uploadId = getApp().globalObj.utils.guid();
-    let param = {
-      upload_id: uploadId,
-      file_id: "",
-      file_name: fileObj.name,
-      store_area_code: "dr",
-      store_file_name: "",
-      store_file_path: "",
-      file_size: fileObj.size
-    };
-
-    let uploadObj = getApp().globalObj.uploadFile.commonUploadFile;
-    uploadObj.init(fileObj, param, (res) => {
-      console.log(res);
-    }, (res) => {
-      console.log(res);
-    }, (res) => {
-      console.log(res);
-    });
-    uploadObj.execUpload();
-    return true;
-
-  },
-
-  // 取消分片上传
-  cancelChunkUpload() {
-    this._chunkUploadCancelled = true;
-  },
-
-  // 封装：上传文件 Promise 化
-  _uploadFilePromise({ url, filePath, name, header = {}, formData = {} }) {
-    return new Promise((resolve, reject) => {
-      wx.uploadFile({
-        url,
-        filePath,
-        name,
-        header: Object.assign({ 'Content-Type': 'multipart/form-data' }, header),
-        formData,
-        success: (res) => {
-          try {
-            const data = JSON.parse(res.data);
-            if (data && data.success) {
-              resolve(data);
-            } else {
-              reject(new Error((data && data.message) || '上传分片失败'));
-            }
-          } catch (_) {
-            reject(new Error('分片响应解析失败'));
-          }
-        },
-        fail: (err) => reject(err),
-      });
-    });
-  },
-
-  // 封装：网络请求 Promise 化
-  _requestPromise({ url, method = 'GET', data = {}, header = {} }) {
-    return new Promise((resolve, reject) => {
-      wx.request({
-        url,
-        method,
-        data,
-        header: Object.assign({ 'Content-Type': 'application/json' }, header),
-        success: (res) => resolve(res),
-        fail: (err) => reject(err),
-      });
-    });
-  },
 });

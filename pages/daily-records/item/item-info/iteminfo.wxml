@@ -13,15 +13,16 @@
         <l-form-item label="物品图片：" labelPlacement="row" alignItems="flex-start" name="item_image">
           <view class="image-upload-container">
             <!-- 已上传的图片 -->
-            <view class="image-item" wx:if="{{item_picture}}" bindtap="onChooseImage">
-              <image class="uploaded-image" src="{{item_picture}}" mode="aspectFill" data-url="{{item_image}}"></image>
+            <view class="image-item" wx:if="{{item_picture_url}}">
+              <image class="uploaded-image" src="{{item_picture_url}}" mode="aspectFill" bindtap="onChooseImage"
+                data-url="{{item_image}}" />
               <view class="image-delete" bindtap="onDeleteImage">
                 <text class="delete-icon">X</text>
               </view>
             </view>
 
             <!-- 上传按钮 -->
-            <view class="upload-btn" wx:if="{{!item_picture}}" bindtap="onChooseImage">
+            <view class="upload-btn" wx:if="{{!item_picture_url}}" bindtap="onChooseImage">
               <view class="upload-icon">+</view>
               <text class="upload-text">添加图片</text>
               <text class="upload-tip">选择一张图片</text>
