@@ -61,7 +61,7 @@
           <view class="row-inline">
             <l-input class="form-control" l-input-class="input-full" type="number" value="{{item_number}}"
               bind:lininput="onItemNumberInput" />
-            <l-button size="mini" class="ml8" bind:lintap="onChooseUnit">{{ item_number_unit || '单位选择' }}</l-button>
+            <l-button size="mini" class="ml8" bind:lintap="onChooseUnit">{{ item_number_unit_bak || '单位选择' }}</l-button>
           </view>
         </l-form-item>
         <l-form-item label="价格：" labelPlacement="row" alignItems="center" name="item_price">

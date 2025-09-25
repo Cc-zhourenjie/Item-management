@@ -15,6 +15,7 @@ Page({
     // 数量与价格
     item_number: 1,
     item_number_unit: "",
+    item_number_unit_bak: "",
     item_price: "",
     item_category: "",
 
@@ -171,9 +172,30 @@ Page({
     wx.lin &&
       wx.lin.showActionSheet &&
       wx.lin.showActionSheet({
-        itemList: [{ name: "个" }, { name: "袋" }, { name: "箱" }],
+        itemList: [
+          { name: "个", value: "piece" },
+          { name: "次", value: "time" },
+          { name: "袋", value: "bag" },
+          { name: "瓶", value: "bottle" },
+          { name: "毫克", value: "milligram" },
+          { name: "克", value: "gram" },
+          { name: "千克", value: "kilogram" },
+          { name: "毫升", value: "milliliter" },
+          { name: "升", value: "liter" },
+          { name: "包", value: "pack" },
+          { name: "盒", value: "box" },
+          { name: "桶", value: "barrel" },
+          { name: "张", value: "sheet" },
+          { name: "片", value: "slice" },
+          { name: "块", value: "block" },
+          { name: "件", value: "item" },
+          { name: "条", value: "strip" },
+          { name: "副", value: "pair" },
+          { name: "颗", value: "grain" },
+          { name: "粒", value: "pellet" },
+        ],
         success: ({ item }) => {
-          this.setData({ item_number_unit: item.name });
+          this.setData({ item_number_unit: item.value, item_number_unit_bak: item.name });
         }
       });
   },

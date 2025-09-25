@@ -36,18 +36,22 @@
           bindload="onThumbLoad" binderror="onThumbError" bindtap="onPreviewImage"></image>
         <view class="card-info" data-index="{{index}}" bindtap="onCardClick">
           <view class="card-title">{{item.item_name}}</view>
-          <view class="card-desc {{item.item_state == -1 ? 'text-red' : 'text-green'}}">{{item.expiration_time_remark}}</view>
+          <view class="card-desc {{item.item_state == -1 ? 'text-red' : 'text-green'}}">{{item.expiration_time_remark}}
+          </view>
+          <view class="card-desc" wx:if="{{item.item_state != '-1'}}">
+            到期：<span class=" text-red">{{item.item_state_bak}}</span>
+          </view>
+          <view class=" card-desc">剩余: {{item.remaining}}{{item.remaining_unit}}{{item.remaining_ercentage}}</view>
           <view class="card-desc">到期：{{item.valid_date}}</view>
-          <view class="card-desc">剩余: {{item.remaining}}{{item.remaining_unit}}{{item.remaining_ercentage}}</view>
           <view class="card-footer">
             <view class="card-price">¥{{item.item_price}}</view>
             <!-- <view class="card-num">剩余: {{item.remaining}}</view> -->
           </view>
         </view>
       </view>
-      <!-- 卡片右下角编辑按钮（仅样式，无点击事件） -->
+      <!-- 卡片右下角编辑按钮 -->
       <view class="card-actions">
-        <view class="card-action action-edit">
+        <view class="card-action action-edit" data-index="{{index}}" bindtap="onUseClick">
           <text class="card-action-icon">✎</text>
         </view>
         <!-- <view class="card-action action-add">
@@ -56,5 +60,53 @@
       </view>
     </view>
   </view>
+
+  <!-- 编辑弹窗 -->
+  <view class="modal-overlay" wx:if="{{showEditModal}}" bindtap="onModalOverlayClick">
+    <view class="modal-content" catchtap="stopPropagation">
+      <!-- 顶部标题 -->
+      <view class="modal-header">
+        <text class="modal-title">{{useForm.item_name}}</text>
+      </view>
+
+      <view class="remaining-info">剩余：{{useForm.remaining}}</view>
+
+      <!-- 数量输入区域 -->
+      <view class="modal-body">
+        <view class="number-container">
+          <!-- 减号按钮 -->
+          <view class="number-btn number-minus" bindtap="onNumberDecrease">-</view>
+
+          <!-- 数量输入框 -->
+          <input class="number-input" type="number" value="{{useForm.number}}" bindinput="onNumberInput" />
+
+          <!-- 加号按钮 -->
+          <view class="number-btn number-plus" bindtap="onNumberIncrease">+</view>
+
+          <!-- 单位文本框 -->
+          <view class="number-unit">{{useForm.unit}}</view>
+        </view>
+      </view>
+
+      <!-- 底部按钮 -->
+      <view class="modal-footer">
+        <button class="modal-btn modal-btn-use" bindtap="onUse">
+          使用
+        </button>
+        <button class="modal-btn modal-btn-open" wx:if="{{useForm.item_state === 2}}" bindtap="onOpen">
+          调整开封日期
+        </button>
+        <button class="modal-btn modal-btn-open" wx:if="{{useForm.item_state != 2}}" bindtap="onOpen">
+          仅开封
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 开封日期选择器 -->
+  <van-popup show="{{showOpenDatePicker}}" position="bottom" z-index="{{openDateZIndex}}" bind:close="onCancelOpenDate">
+    <van-datetime-picker type="date" value="{{openDateValue}}" min-date="{{openDateMin}}" max-date="{{openDateMax}}"
+      bind:confirm="onConfirmOpenDate" bind:cancel="onCancelOpenDate" />
+  </van-popup>
 
 </scroll-view>

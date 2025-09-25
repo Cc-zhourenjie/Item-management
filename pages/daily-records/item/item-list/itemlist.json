@@ -1,5 +1,8 @@
 {
-  "usingComponents": {},
+  "usingComponents": {
+    "van-popup": "@vant/weapp/popup/index",
+    "van-datetime-picker": "@vant/weapp/datetime-picker/index"
+  },
   "backgroundTextStyle": "light",
   "navigationBarBackgroundColor": "#6676fa",
   "navigationBarTitleText": "物品清单",
