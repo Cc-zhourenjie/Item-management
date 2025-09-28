@@ -72,7 +72,6 @@ Page({
     let detail = e.detail;
     if ("add" == detail.key) {
       console.log("录入")
-
       getApp().globalObj.requestUtils.checkLogin('/pages/daily-records/item/item-info/iteminfo', function () {
         wx.navigateBack({
           // delta: 1
@@ -101,6 +100,11 @@ Page({
     }
     else if ("use_record" == detail.key) {
       console.log("使用记录")
+      getApp().globalObj.requestUtils.checkLogin('/pages/daily-records/item/item-usedrecord/itemusedrecord', function () {
+        wx.navigateBack({
+          // delta: 1
+        })
+      });
     }
 
   }

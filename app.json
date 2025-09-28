@@ -3,6 +3,7 @@
     "pages/daily-records/item/item-index/itemindex",
     "pages/daily-records/item/item-info/iteminfo",
     "pages/daily-records/item/item-list/itemlist",
+    "pages/daily-records/item/item-usedrecord/itemusedrecord",
     "pages/login/login"
   ],
   "entryPagePath": "pages/daily-records/item/item-index/itemindex",

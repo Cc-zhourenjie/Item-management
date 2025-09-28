@@ -1,0 +1,71 @@
+<!--pages/daily-records/item/item-usedrecord/itemusedrecord.wxml-->
+<view class="container">
+    <!-- 搜索和筛选区域 -->
+    <view class="search-section">
+        <input class="search-input" placeholder="输入物品名称" />
+        <button class="filter-btn">物品分类</button>
+        <button class="search-btn">搜索</button>
+    </view>
+
+    <!-- 日历导航 -->
+    <view class="calendar-nav">
+        <button class="nav-btn prev-btn" bindtap="prevMonth">‹</button>
+        <text class="month-text">{{currentYear}}年{{currentMonth}}月</text>
+        <button class="nav-btn next-btn" bindtap="nextMonth">›</button>
+    </view>
+
+    <!-- 日历网格 -->
+    <view class="calendar-container">
+        <!-- 星期标题 -->
+        <view class="week-header">
+            <text class="week-day">一</text>
+            <text class="week-day">二</text>
+            <text class="week-day">三</text>
+            <text class="week-day">四</text>
+            <text class="week-day">五</text>
+            <text class="week-day weekend">六</text>
+            <text class="week-day weekend">日</text>
+        </view>
+
+        <!-- 日期网格 -->
+        <view class="calendar-grid">
+            <view
+                class="calendar-day {{item.isCurrentMonth ? 'current-month' : 'other-month'}} {{item.isToday ? 'today' : ''}} {{item.isWeekend ? 'weekend' : ''}}"
+                wx:for="{{calendarDays}}" wx:key="index" bindtap="selectDate" data-date="{{item.date}}">
+                <text class="day-number">{{item.day}}</text>
+                <view class="day-records" wx:if="{{item.records && item.records.length > 0}}">
+                    <view class="record-tag" wx:for="{{item.records}}" wx:for-item="record" wx:key="index"
+                        style="background-color: {{record.color}}">
+                        <text class="record-name">{{record.name}}</text>
+                        <text class="record-amount">{{record.amount}}</text>
+                    </view>
+                    <text class="more-records" wx:if="{{item.records.length > 3}}">等{{item.records.length -
+                        3}}个...</text>
+                </view>
+                <text class="no-records" wx:else>无</text>
+            </view>
+        </view>
+    </view>
+
+
+
+    <!-- 使用记录列表 -->
+    <scroll-view class="records-list" scroll-y>
+        <view class="list-header">
+            <text class="summary-title">本月使用记录</text>
+            <text class="total-amount">消费总额: ¥{{totalAmount}}</text>
+        </view>
+        <view class="record-item" wx:for="{{usageRecords}}" wx:key="index">
+            <view class="record-icon">
+                <view class="icon-container">
+                    <text class="icon-text">📦</text>
+                </view>
+            </view>
+            <view class="record-content">
+                <text class="item-name">{{item.name}}</text>
+                <text class="usage-quantity">使用数量:{{item.quantity}}</text>
+                <text class="usage-time">{{item.time}}</text>
+            </view>
+        </view>
+    </scroll-view>
+</view>

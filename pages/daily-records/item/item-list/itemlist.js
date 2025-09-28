@@ -271,21 +271,38 @@ Page({
 
     const data = {
       item_info_id: this.data.useForm.item_info_id || item.item_info_id,
-      use_number: number,
-      unit: this.data.useForm.unit
+      used_number: number
     };
 
     // 调用后端接口（按你后端路由调整路径）
     const url = getApp().globalObj.requestUtils.requestHost("dr") + "/api/dr/item/info/useditem";
     getApp().globalObj.requestUtils.ccPost(url, data, null, { is_append_prefix: false }).then((result) => {
+      console.log(result);
       if (result && result.data) {
         // 本地更新剩余数量并关闭弹窗
         const newRemaining = (Number(item.remaining) || 0) - number;
-        this.setData({
-          [`itemList[${idx}].remaining`]: newRemaining < 0 ? 0 : newRemaining,
-          showEditModal: false
-        });
+        let numPercentage = Math.trunc((newRemaining / item.item_count) * 100);
+        
+        // 如果剩余数量为0，从数组中删除该项
+        if (newRemaining <= 0) {
+          const newItemList = [...this.data.itemList];
+          newItemList.splice(idx, 1);
+          this.setData({
+            itemList: newItemList,
+            showEditModal: false
+          });
+        } else {
+          this.setData({
+            [`itemList[${idx}].remaining`]: newRemaining,
+            [`itemList[${idx}].remaining_ercentage`]: "(" + numPercentage + "%)",
+            [`itemList[${idx}].item_state_bak`]: result.data.item_state_bak,
+            showEditModal: false
+          });
+        }
         wx.showToast({ title: '使用成功', icon: 'success' });
+      }
+      else {
+        wx.showToast({ title: '使用失败，请重试', icon: 'none' });
       }
     }).catch(() => {
       wx.showToast({ title: '使用失败，请重试', icon: 'none' });

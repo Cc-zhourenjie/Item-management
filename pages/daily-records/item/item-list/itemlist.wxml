@@ -39,7 +39,7 @@
           <view class="card-desc {{item.item_state == -1 ? 'text-red' : 'text-green'}}">{{item.expiration_time_remark}}
           </view>
           <view class="card-desc" wx:if="{{item.item_state != '-1'}}">
-            到期：<span class=" text-red">{{item.item_state_bak}}</span>
+            物品状态：<span class=" text-red">{{item.item_state_bak}}</span>
           </view>
           <view class=" card-desc">剩余: {{item.remaining}}{{item.remaining_unit}}{{item.remaining_ercentage}}</view>
           <view class="card-desc">到期：{{item.valid_date}}</view>
