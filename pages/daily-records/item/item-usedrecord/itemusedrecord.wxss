@@ -26,7 +26,8 @@
   color: #333;
 }
 
-.filter-btn, .search-btn {
+.filter-btn,
+.search-btn {
   height: 80rpx;
   padding: 0 30rpx;
   background-color: #ff6b6b;
@@ -38,10 +39,15 @@
 }
 
 /* 按钮样式重置，去除小程序默认边框与背景 */
-.filter-btn::after, .search-btn::after, .nav-btn::after {
+.filter-btn::after,
+.search-btn::after,
+.nav-btn::after {
   border: none;
 }
-.filter-btn, .search-btn, .nav-btn {
+
+.filter-btn,
+.search-btn,
+.nav-btn {
   background-image: none;
 }
 
@@ -54,7 +60,7 @@
   background-color: #fff;
   margin: 0 20rpx;
   border-radius: 20rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.1);
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
 }
 
 .nav-btn {
@@ -82,7 +88,7 @@
   margin: 20rpx;
   border-radius: 20rpx;
   padding: 20rpx 20rpx 10rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.1);
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
 }
 
 /* 星期标题 */
@@ -113,7 +119,7 @@
 
 .calendar-day {
   width: 14.2857%;
-  height: 120rpx;
+  min-height: 120rpx;
   padding: 8rpx;
   display: flex;
   flex-direction: column;
@@ -133,6 +139,17 @@
 
 .calendar-day.today {
   background-color: #fff3cd;
+}
+
+.calendar-day.selected {
+  /* outline: 3rpx solid #4e73df;
+  border-radius: 12rpx; */
+  background-color: #ffe69c;
+}
+
+/* 有记录的日期格子更高一些 */
+.calendar-day.has-records {
+  min-height: 160rpx;
 }
 
 .calendar-day.weekend .day-number {
@@ -217,59 +234,82 @@
   background-color: #fff;
   margin: 0 20rpx 20rpx;
   border-radius: 20rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.1);
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
   max-height: 600rpx;
 }
 
-.record-item {
+/* pages/daily-records/item/item-list/itemlist.wxss */
+
+/* 原生卡片容器样式 */
+.native-card-container {
+  padding: 20rpx;
+}
+
+/* 原生卡片样式 - 仿照 van-card */
+.native-card {
+  background: #fff;
+  border-radius: 12rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.1);
+  margin-bottom: 20rpx;
+  overflow: hidden;
+  position: relative;
+}
+
+/* 卡片内容布局 */
+.card-content {
   display: flex;
-  align-items: center;
-  padding: 30rpx;
-  border-bottom: 1rpx solid #f0f0f0;
+  padding: 20rpx;
+  align-items: flex-start;
 }
 
-.record-item:last-child {
-  border-bottom: none;
+/* 商品图片样式 */
+.card-thumb {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 8rpx;
+  margin-right: 20rpx;
+  flex-shrink: 0;
 }
 
-.record-icon {
-  margin-right: 30rpx;
-}
-
-.icon-container {
-  width: 80rpx;
-  height: 80rpx;
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-  border-radius: 20rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.icon-text {
-  font-size: 40rpx;
-}
-
-.record-content {
+/* 商品信息区域 */
+.card-info {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 10rpx;
+  justify-content: space-between;
+  min-height: 160rpx;
 }
 
-.item-name {
+/* 商品标题 */
+.card-title {
   font-size: 32rpx;
-  font-weight: bold;
-  color: #333;
+  font-weight: 600;
+  color: #323233;
   line-height: 1.4;
+  margin-bottom: 8rpx;
+  white-space: normal;
+  word-break: break-word;
+  overflow: visible;
 }
 
-.usage-quantity {
-  font-size: 28rpx;
-  color: #666;
+/* 商品描述 */
+.card-desc {
+  font-size: 26rpx;
+  color: #969799;
+  line-height: 1.4;
+  margin-bottom: 16rpx;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
 }
 
-.usage-time {
-  font-size: 24rpx;
-  color: #999;
+/* 状态色 */
+.text-red {
+  color: #e11d48;
+}
+
+.text-green {
+  color: #16a34a;
 }

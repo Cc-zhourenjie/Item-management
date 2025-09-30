@@ -66,11 +66,73 @@ function dateStringToTimestamp(dateString) {
   return isNaN(timestamp) ? null : timestamp;
 }
 
+/**
+ * 根据输入日期返回相对今日的简洁描述
+ * 规则：
+ * - 今天 => "今天"
+ * - 昨天 => "昨天"
+ * - 同一周(以周一为一周开始) => "周一" ~ "周日"
+ * - 其他 => "YYYY-MM-DD"
+ * @param {Date|string|number} date - 日期对象、时间戳或可解析的日期字符串
+ * @returns {string}
+ */
+function formatRelativeDay(date) {
+  // 规范化输入
+  if (!(date instanceof Date)) {
+    if (typeof date === 'string' || typeof date === 'number') {
+      date = new Date(date);
+    } else {
+      return '';
+    }
+  }
+  if (isNaN(date.getTime())) return '';
+
+  const toStartOfDay = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+  const timePart = formatTimeOnly(date); // HH:mm:ss
+
+  // 当天、本周计算均基于本地时区的 00:00
+  const today = new Date();
+  const todayStart = toStartOfDay(today);
+  const inputStart = toStartOfDay(date);
+
+  // 今天
+  if (inputStart.getTime() === todayStart.getTime()) {
+    return '今天 ' + timePart;
+  }
+
+  // 昨天
+  const yesterdayStart = addDays(todayStart, -1);
+  if (inputStart.getTime() === yesterdayStart.getTime()) {
+    return '昨天 ' + timePart;
+  }
+
+  // 计算周一作为一周的起始
+  const startOfWeek = (d) => {
+    const day = d.getDay(); // 0(周日)~6(周六)
+    const diffToMonday = day === 0 ? -6 : 1 - day; // 周日 -> 往回6天；其他 -> 1-day
+    return addDays(toStartOfDay(d), diffToMonday);
+  };
+
+  const thisWeekStart = startOfWeek(today);
+  const nextWeekStart = addDays(thisWeekStart, 7);
+
+  // 是否在本周(周一 00:00 <= input < 下周一 00:00)
+  if (inputStart.getTime() >= thisWeekStart.getTime() && inputStart.getTime() < nextWeekStart.getTime()) {
+    const weekdayMap = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+    return weekdayMap[inputStart.getDay()] + ' ' + timePart;
+  }
+
+  // 其他情况：返回标准日期
+  return formatTime(inputStart, 'YYYY-MM-DD HH:mm:ss');
+}
+
 // 暴露接口
 module.exports = {
   formatTime,
   formatDate,
   formatDateTime,
   formatTimeOnly,
-  dateStringToTimestamp
+  dateStringToTimestamp,
+  formatRelativeDay
 };

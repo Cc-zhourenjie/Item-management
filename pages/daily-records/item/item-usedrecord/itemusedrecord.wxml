@@ -30,41 +30,48 @@
         <!-- 日期网格 -->
         <view class="calendar-grid">
             <view
-                class="calendar-day {{item.isCurrentMonth ? 'current-month' : 'other-month'}} {{item.isToday ? 'today' : ''}} {{item.isWeekend ? 'weekend' : ''}}"
+                class="calendar-day {{item.isCurrentMonth ? 'current-month' : 'other-month'}} {{item.isToday ? 'today' : ''}} {{item.isWeekend ? 'weekend' : ''}} {{item.isSelected ? 'selected' : ''}} {{(item.isCurrentMonth && item.records && item.records.length > 0) ? 'has-records' : ''}}"
                 wx:for="{{calendarDays}}" wx:key="index" bindtap="selectDate" data-date="{{item.date}}">
                 <text class="day-number">{{item.day}}</text>
-                <view class="day-records" wx:if="{{item.records && item.records.length > 0}}">
-                    <view class="record-tag" wx:for="{{item.records}}" wx:for-item="record" wx:key="index"
+                <view class="day-records" wx:if="{{item.isCurrentMonth && item.records && item.records.length > 0}}">
+                    <view class="record-tag" wx:for="{{item.visibleRecords}}" wx:for-item="record" wx:key="index"
                         style="background-color: {{record.color}}">
-                        <text class="record-name">{{record.name}}</text>
-                        <text class="record-amount">{{record.amount}}</text>
+                        <text class="record-name">{{record.item_name}}</text>
+                        <text class="record-amount">{{record.item_price}}</text>
                     </view>
-                    <text class="more-records" wx:if="{{item.records.length > 3}}">等{{item.records.length -
-                        3}}个...</text>
+                    <text class="more-records" wx:if="{{item.hiddenCount > 0}}">
+                        等{{item.hiddenCount}}个...
+                    </text>
                 </view>
-                <text class="no-records" wx:else>无</text>
+                <text class="no-records" wx:elif="{{item.isCurrentMonth}}">无</text>
             </view>
         </view>
     </view>
-
 
 
     <!-- 使用记录列表 -->
     <scroll-view class="records-list" scroll-y>
         <view class="list-header">
             <text class="summary-title">本月使用记录</text>
-            <text class="total-amount">消费总额: ¥{{totalAmount}}</text>
+            <text class="total-amount">消费总额: ¥{{costTotal}}</text>
         </view>
-        <view class="record-item" wx:for="{{usageRecords}}" wx:key="index">
-            <view class="record-icon">
-                <view class="icon-container">
-                    <text class="icon-text">📦</text>
+        <view class="native-card-container">
+            <view class="native-card" wx:for="{{usageRecords}}" wx:key="index">
+                <view class="card-content">
+                    <image class="card-thumb"
+                        src="http://127.0.0.1:10020/api/oss/file/browse/browse/{{item.item_picture}}" mode="aspectFill"
+                        data-index="{{index}}" bindload="onThumbLoad" binderror="onThumbError" bindtap="onPreviewImage">
+                    </image>
+                    <view class="card-info" data-index="{{index}}" bindtap="onCardClick">
+                        <view class="card-title">{{item.item_name}}</view>
+                        <view class="card-desc" wx:if="{{item.item_state != '-1'}}">
+                            使用数量: {{item.used_volume}}{{item.item_number_unit_bak}}
+                        </view>
+                        <view class=" card-desc">
+                            {{item.used_date}}
+                        </view>
+                    </view>
                 </view>
-            </view>
-            <view class="record-content">
-                <text class="item-name">{{item.name}}</text>
-                <text class="usage-quantity">使用数量:{{item.quantity}}</text>
-                <text class="usage-time">{{item.time}}</text>
             </view>
         </view>
     </scroll-view>
